@@ -9,94 +9,58 @@ Before editing files for a substantial task:
 - Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
 <!-- intent-skills:end -->
 
-# Project context
+# PREIshare — AGENTS
 
-## Scaffold commands
+Human-and-agent onboarding memory for this repo. Durable rules live in [`.cursor/rules/preishare.mdc`](.cursor/rules/preishare.mdc). Keep the Intent skill-loading block above; do not remove it.
 
-Exact CLI used (initially created a nested folder, then merged into this repo root):
+## What this is
 
-```bash
-npx @tanstack/cli@latest create my-tanstack-app --agent --package-manager npm --tailwind
-```
+PREIshare is a **real-estate intelligence** product: help investors decide more intelligently.
 
-Notes from CLI:
-- `--tailwind` is deprecated/ignored; Tailwind is already enabled in the standard TanStack Start scaffold.
-- No partner add-ons were selected (`chosenAddOns: []`). Blank React Start starter only.
+- Single package at repo root (`preishare-org-repo`); app code under `src/`
+- Stack: TypeScript, React, TanStack Start (file-based Router), Vite, Tailwind CSS v4, npm
+- Intended data layer (not in tree yet): Supabase, PostgreSQL, pgvector
 
-Follow-up Intent commands (run from this repo root):
+## Onboarding docs
 
-```bash
-npx @tanstack/intent@latest install
-npx @tanstack/intent@latest list
-```
+| Doc | Use it for |
+|-----|------------|
+| [`docs/onboarding/team-orientation-notes.md`](docs/onboarding/team-orientation-notes.md) | Mission, GitHub workflow, PR definition of done, AI-use stance |
+| [`docs/onboarding/repo-map.md`](docs/onboarding/repo-map.md) | Paths, safe first-touch vs do-not-edit-yet |
+| [`docs/onboarding/setup-log.md`](docs/onboarding/setup-log.md) | Clone/remotes setup audit trail |
 
-Result: 9 intent-enabled packages, 31 skills (Start, Router, Devtools, Virtual File Routes).
+If a path claim conflicts with the disk, trust the disk and update the repo map.
 
-## Chosen stack
+## Scripts (from package.json / repo-map)
 
-| Choice | Value |
-|--------|--------|
-| Framework | React 19 + TanStack Start |
-| Starter | Blank / default file-router preset |
-| Package manager | npm |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite`) |
-| Toolchain | Vite 8 + TypeScript (default CLI toolchain) |
-| Router | TanStack Router file-based routes (`src/routes`) |
-| Integrations / add-ons | None |
-
-## Layout (preserve unless there is a clear reason to change)
-
-- `src/routes/` — file routes (`__root.tsx`, `index.tsx`, `about.tsx`)
-- `src/router.tsx` — router factory
-- `src/components/` — Header, Footer, ThemeToggle
-- `src/styles.css` — Tailwind entry
-- `vite.config.ts` — `devtools()`, `tailwindcss()`, `tanstackStart()`, `viteReact()`
-- `tsr.config.json` — route generation config
-- `.cta.json` — scaffold metadata
-
-Package name in `package.json` is `preishare-org-repo` (repo root). App lives at the repository root, not under `my-tanstack-app/`.
-
-## Environment variables
-
-None required for the blank scaffold.
-
-When adding secrets or config later (from `@tanstack/start-client-core#start-core/execution-model`):
-- **Server-only:** read `process.env.MY_SECRET` inside handlers / `createServerFn` / per-request code — never at module scope, never with a `VITE_` prefix.
-- **Client-exposed:** only `VITE_*` via `import.meta.env.VITE_*`.
-- Do not put secrets in `VITE_*` variables (they ship in the client bundle).
-- `.env` is gitignored.
-
-## Scripts
+No `test`, `lint`, or `format` scripts were present when mapped. Use only what exists:
 
 ```bash
-npm install
-npm run dev      # Vite on port 3000
+npm run dev              # Vite on port 3000
 npm run build
 npm run preview
 npm run generate-routes
 ```
 
-## Deployment notes
+Confirm scripts in `package.json` or `docs/onboarding/repo-map.md` before inventing others.
 
-Blank scaffold has no host-specific adapter yet. TanStack Start deploys via Vite + Nitro (see `npx @tanstack/intent@latest load @tanstack/start-client-core#start-core/deployment`). Typical next step for Vercel/Node/Railway is adding the Nitro Vite plugin when you are ready to deploy.
+## Layout (quick)
 
-## Architectural decisions
+- `src/routes/` — pages (`__root.tsx`, `index.tsx`, `about.tsx`)
+- `src/components/` — shared UI
+- `src/styles.css` — Tailwind / tokens
+- `src/router.tsx` — router factory
+- `src/routeTree.gen.ts` — generated; do not hand-edit
 
-- Keep the generated structure; prefer Intent skills over guessing Start/Router APIs.
-- Isomorphic-by-default: use `createServerFn` / `createServerOnlyFn` / `createClientOnlyFn` for environment boundaries.
-- No auth, DB, or partner integrations in this blank app.
+## Agent behavior
 
-## Known gotchas
+1. **Plan** — Restate the goal; list files to touch; read onboarding docs / repo map when unsure.
+2. **Small diff** — Smallest change that finishes the task; match neighboring style; no drive-by refactors or new libraries unless asked.
+3. **Verify** — Stop after each logical unit; check the change does what was requested.
 
-- CLI `--tailwind` flag is ignored (Tailwind is on by default).
-- Nested `my-tanstack-app/` from the create command was flattened into this repo root on purpose.
-- `intent install` keeps a short skill-loading block at the top of this file; durable project notes live below it.
-- Future Intent versions may require an explicit `intent.skills` allowlist.
+Also:
 
-## Next steps
-
-1. `npm run dev` and open http://localhost:3000
-2. Add routes under `src/routes/` as needed
-3. Load matching Intent skills before Start/Router/Devtools changes
-4. When deploying, load the deployment skill and add the appropriate Nitro/host preset
-5. Add `.env` / typed env declarations only when real config is introduced
+- Prefer existing patterns over greenfield frameworks.
+- Point detailed conventions at [`.cursor/rules/preishare.mdc`](.cursor/rules/preishare.mdc) rather than duplicating them here.
+- Never commit or print secrets; document env *names* only if config is needed.
+- Safe first PRs: `docs/onboarding/` (and small mentored `README.md` clarifications). Avoid auth, billing, migrations, CI secrets, lockfile churn, and tooling edits unless explicitly tasked.
