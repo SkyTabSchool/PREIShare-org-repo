@@ -1,0 +1,50 @@
+---
+description: PREIshare project rules for AI coding agents
+alwaysApply: true
+---
+
+# PREIshare — agent rules
+
+## Project identity
+PREIshare is a real-estate intelligence product: help investors make intelligent decisions. Prefer existing patterns in this single-package repo over greenfield frameworks. For mission, PR definition of done, and AI-use stance, read `docs/onboarding/team-orientation-notes.md`. For paths, read `docs/onboarding/repo-map.md`.
+
+## Stack (do not substitute)
+- Language: TypeScript (strict)
+- App framework: TanStack Start + React (file-based TanStack Router; Vite + Tailwind CSS v4; npm)
+- Backend/data: Supabase, PostgreSQL, pgvector (intended product data layer—do not invent config until it exists in-repo)
+- Collaboration: Git + GitHub pull requests (feature branches; focused, self-contained PRs)
+
+App surfaces today: `src/routes/`, `src/components/`, `src/styles.css`, `src/router.tsx`. Path aliases `#/*` and `@/*` → `src/*`.
+
+## Where to work (new contributors)
+- Safe first surfaces: `docs/onboarding/`, small clarifying `README.md` edits if mentored, other CONTRIBUTORS-style root docs the team already identified
+- Read before edit: `docs/onboarding/repo-map.md`, `docs/onboarding/team-orientation-notes.md`, and any package/app README files that exist in-repo
+- Avoid unless explicitly tasked: auth, billing, database migrations, CI secrets, large dependency upgrades, tooling (`vite.config.ts`, `tsconfig.json`, `tsr.config.json`, lockfile churn), and hand-edits to `src/routeTree.gen.ts`
+
+## How to change code
+- Prefer the smallest diff that completes the requested task
+- Match existing naming, file layout, and TypeScript style in neighboring files
+- Do not drive-by refactor unrelated modules
+- Do not add new libraries unless the human explicitly asks and justifies them
+- File routes: `createFileRoute` / `createRootRoute`; default-export components; prefer `Link` for in-app nav
+- Style with Tailwind + CSS variables from `src/styles.css`; keep the scaffold layout unless change is justified
+- Env boundaries: `createServerFn` / `createServerOnlyFn` / `createClientOnlyFn`; secrets via `process.env` on server only; client config only as `VITE_*` (never put secrets in `VITE_*`)
+- Before Start/Router/Devtools edits: `npx @tanstack/intent@latest list` then `load` matching skills
+
+## Secrets and safety
+- Never commit `.env`, API keys, tokens, or connection strings
+- Never print secrets into docs, rules, or chat logs
+- Never paste private investor data or production credentials into an AI tool or pull request
+- If a change needs configuration, document the variable *name* only (for example `SUPABASE_URL`), not a real value
+
+## Agent workflow
+- Restate the goal and list files you will touch before editing
+- Implement in small steps; stop for verification after each logical unit
+- When unsure about PREIshare structure, consult `docs/onboarding/` and the repo map rather than inventing paths
+- Human remains the author: AI may draft; do not open work the author cannot explain
+
+## Out of scope defaults
+- No rewriting the entire app "for best practices" unprompted
+- No changing product requirements silently—flag product questions to the human
+- No parallel language, framework, database, or host next to the stack above
+- No multi-feature rewrites or formatting-only churn mixed with behavior changes in one request
