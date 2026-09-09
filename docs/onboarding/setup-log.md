@@ -3,7 +3,7 @@
 **Learner:** Kory Anderson
 **Date:** 2026-09-09
 **OS:** Linux, Fedora 44
-**Team repo (upstream):** https://github/EdTechForLearning/PREIshare-org-repo
+**Team repo (upstream):** https://github.com/EdTechForLearning/PREIshare-org-repo
 **Orientation notes used:** 'docs/onboarding/team-orientation-notes.md'
 
 ## 1. Accounts and fork
@@ -11,7 +11,7 @@
 | Check | Result | Notes |
 | --- | --- | --- |
 | Github sign-in works | PASS | Account username: SkyTabSchool |
-| Can view team repo https://github/EdTechForLearning/PREIshare-org-repo | PASS | |
+| Can view team repo https://github.com/EdTechForLearning/PREIshare-org-repo | PASS | |
 | Fork creating in my account | PASS | My fork URL: https://github.com/SkyTabSchool/PREIshare-org-repo |
 
 ## 2. Git instal and identity
