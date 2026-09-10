@@ -8,8 +8,8 @@
 | Item | Value |
 | --- | --- |
 | GitHub repository (you can push) | `https://github.com/SkyTabSchool/PREIshare-org-repo.git` |
-| Instructor collaborator | `thortek` added: no |
-| Vercel Production URL | `https://prei-share-org-repo-jzmqfqxk5-sky-tab.vercel.app` |
+| Instructor collaborator | `thortek` added: yes |
+| Vercel Production URL | `https://prei-share-org-repo-tau.vercel.app/` |
 | Preview URLs | Do **not** submit these to Canvas |
 
 ## Hobby constraints I will keep
@@ -22,4 +22,4 @@
 ## First production deploy
 
 - Status: Ready
-- Incognito check of Production URL: fail (URL resolves to Vercel login / 403 Deployment Protection, not the public app)
+- Incognito check of Production URL: pass
