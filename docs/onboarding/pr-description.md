@@ -1,6 +1,6 @@
 ## Summary
 
-First onboarding PR for SkyTabSchool: add a root `CONTRIBUTORS.md` entry and record how the change was made, so the team can practice review on a small docs-only diff.
+First onboarding PR for SkyTabSchool: create a root `CONTRIBUTORS.md` file and record how the change was made, so the team can practice review on a small docs-only diff.
 
 ## Problem
 
@@ -18,20 +18,21 @@ Notes: `docs/onboarding/first-contribution-notes.md`
 
 ## Test plan
 
-- [ ] Confirm PR is from `docs/first-contribution-SkyTabSchool` (not the default branch).
-- [ ] Open `CONTRIBUTORS.md` and confirm the table renders with name, GitHub link, role, and date.
-- [ ] Confirm GitHub handle links to https://github.com/SkyTabSchool.
-- [ ] Skim the full diff: only planned docs files; no `.env`, secrets, build artifacts, or app/runtime code.
-- [ ] No UI/dev-server check needed (docs-only; no UI touch in this PR).
+- [x] Confirm PR is from `docs/first-contribution-SkyTabSchool` (not the default branch).
+- [x] Open `CONTRIBUTORS.md` and confirm the table renders with name, GitHub link, role, and date.
+- [x] Confirm GitHub handle links to https://github.com/SkyTabSchool.
+- [x] Skim the full diff: only planned docs files; no `.env`, secrets, build artifacts, or app/runtime code.
+
+```text
+| Name | GitHub | Role | Date |
+|------|--------|------|------|
+| Kory | [SkyTabSchool](https://github.com/SkyTabSchool) | Onboarding Engineer | September 9, 2026 |
+```
+
 
 ## Notes for reviewers
 
-- **Scope:** Docs-only. Expect roughly two files: `CONTRIBUTORS.md` and `docs/onboarding/first-contribution-notes.md`.
+- **Scope:** Docs-only. Expect these two files: `CONTRIBUTORS.md` and `docs/onboarding/first-contribution-notes.md`.
 - **Screenshots:** Not required — Markdown table only; GitHub’s file preview is enough.
 - **What to watch for:** Accidental app/config/CI/lockfile churn; edits that should not be on the default branch; secrets or generated artifacts.
 - **Agent mistakes:** None recorded in the notes; agent stayed on the feature branch and did not expand scope.
-
-
-## URL for PR
-
-https://github.com/EdTechForLearning/PREIShare-org-repo/pull/13
