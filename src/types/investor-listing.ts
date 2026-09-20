@@ -5,13 +5,14 @@ import type { ListingStatus } from "./listing-status";
 import type { Ownership } from "./ownership";
 import type { PropertyType } from "./property-type";
 
-/**
- * Core PREIshare investor listing — identity fields plus nested address,
- * financial summary, investor contacts, and ownership.
- */
-export interface InvestorListing {
-  /** Stable unique id for this listing (assigned by the system). */
-  id: string;
+/** Fields every investor listing has, regardless of status. */
+export interface InvestorListingBase {
+  /** Stable identity — do not reassign after create. */
+  readonly id: string;
+  /** Set once when the row is created. */
+  readonly createdAt: string;
+  /** May change when the listing is edited; still not a business key. */
+  readonly updatedAt: string;
 
   /** Short public headline shown in search results and cards. */
   title: string;
@@ -19,17 +20,8 @@ export interface InvestorListing {
   /** Longer investor-facing description of the opportunity. */
   description: string;
 
-  /** Lifecycle state; exactly one allowed value at a time. */
-  status: ListingStatus;
-
   /** Asset class; exactly one allowed property-type value. */
   propertyType: PropertyType;
-
-  /** ISO-8601 datetime string when the listing was first created. */
-  createdAt: string;
-
-  /** ISO-8601 datetime string when the listing was last updated. */
-  updatedAt: string;
 
   /** Nested street / city / region / postal / country group. */
   address: Address;
@@ -46,3 +38,22 @@ export interface InvestorListing {
   /** How each related contact stands to the asset. */
   ownership: Ownership;
 }
+
+/**
+ * Discriminated union: TypeScript uses `status` to know which shape you have.
+ * Example rule: `closedAt` is required only when status is `sold`.
+ */
+export type InvestorListing =
+  | (InvestorListingBase & {
+      status: Exclude<ListingStatus, "sold">;
+      /** Not used unless the listing is sold. */
+      closedAt?: undefined;
+    })
+  | (InvestorListingBase & {
+      status: "sold";
+      /** ISO date string — required when the listing is sold. */
+      closedAt: string;
+    });
+
+export type ClosedInvestorListing = Extract<InvestorListing, { status: "sold" }>;
+export type OpenInvestorListing = Exclude<InvestorListing, { status: "sold" }>;

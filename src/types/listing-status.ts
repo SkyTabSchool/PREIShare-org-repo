@@ -1,6 +1,6 @@
 /**
  * Closed listing lifecycle statuses from the field inventory.
- * Import this alias instead of repeating the union in other files.
+ * Keep this string union as the single source of allowed status spellings.
  */
 export type ListingStatus =
   | "draft"
