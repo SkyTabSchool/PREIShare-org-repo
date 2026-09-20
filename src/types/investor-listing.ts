@@ -1,0 +1,24 @@
+/**
+ * Core PREIshare investor listing — scalar fields only.
+ * Nested types (address, financials, contacts) and unions
+ * (status, property type) are added in later steps.
+ */
+export interface InvestorListing {
+  /** Stable unique id for this listing (assigned by the system). */
+  id: string;
+
+  /** Short public headline shown in search results and cards. */
+  title: string;
+
+  /**
+   * Longer investor-facing description of the opportunity.
+   * Required when published, under offer, or sold; drafts may omit it.
+   */
+  description?: string;
+
+  /** ISO-8601 datetime string when the listing was first created. */
+  createdAt: string;
+
+  /** ISO-8601 datetime string when the listing was last updated. */
+  updatedAt: string;
+}
