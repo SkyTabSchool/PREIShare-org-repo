@@ -4,7 +4,10 @@
  * every export in this file.
  *
  * Do not "fix" these objects. Do not silence errors with `any`, `@ts-ignore`,
- * or `@ts-expect-error`. The point is that `npm run typecheck` reports them.
+ * or `@ts-expect-error`. The errors are the proof that the types work.
+ *
+ * `npm run typecheck` excludes this file so valid sources can pass. Compile
+ * with the root tsconfig (`npx tsc --noEmit`) to see these errors.
  *
  * Import this module only when you want to see those compile errors.
  * Application routes and UI must not import it.

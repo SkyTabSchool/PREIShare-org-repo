@@ -12,14 +12,38 @@ These types catch those mistakes at **compile time**—before users see them.
 - No UI components, no API route handlers, no database clients
 
 ## How to check types
-From the project root after `npm install`:
+
+From the project root after `npm install`, run:
 
 ```bash
 npm run typecheck
 ```
 
-That runs `tsc --noEmit`: TypeScript checks every file under `src/` and reports
-errors without writing JavaScript output files.
+That is the everyday command. It asks TypeScript to read the valid project
+sources (these types, the sample listings, routes, and UI) and report mistakes
+**without writing any JavaScript files**.
+
+**What success looks like:** the command prints the `typecheck` script line,
+then finishes with **no error messages** and a **zero exit code**. Your
+terminal returns to a prompt. If something in the real app sources is wrong,
+you will see file paths and `TSxxxx` codes instead—those are real problems to
+fix.
+
+**The intentional error file is separate.**
+`src/fixtures/invalid-listings.errors.ts` is a teaching fixture: objects that
+*look* like listings but break the rules on purpose. Do not “fix” that file.
+`npm run typecheck` skips it (via `tsconfig.typecheck.json`) so a clean check
+can pass.
+
+To see those expected errors, compile with the root config:
+
+```bash
+npx tsc --noEmit
+```
+
+A human checklist for each expected error is in
+`docs/type-safety/expected-type-errors.md`. Application routes and UI must not
+import the invalid fixture file.
 
 ## Strict mode (plain language)
 `strict: true` in `tsconfig.json` turns on the checker’s safest rules. Combined

@@ -29,14 +29,18 @@ absent. **Number vs string** means we asked for a numeric amount, not a
 formatted money label like `"$12,500,000"`. An **empty array** means a list
 that must contain at least one item was written as `[]`.
 
+`npm run typecheck` checks valid project sources only. It skips this fixtures
+file so that command can pass.
+
 To see the live errors from the project root after `npm install`:
 
 ```bash
-npm run typecheck
+npx tsc --noEmit
 ```
 
-Application routes and UI must not import the invalid fixture file. Import it
-only when you want the checker to report these mistakes.
+That uses the root `tsconfig.json`, which still includes this file. Application
+routes and UI must not import the invalid fixture file. Import it only when you
+want the checker to report these mistakes.
 
 ## Quick map
 
