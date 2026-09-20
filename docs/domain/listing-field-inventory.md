@@ -60,7 +60,6 @@ Contacts are people, not free-text notes. A listing investors can see needs at l
 
 | Field | Meaning | Shape | Required? | Example |
 | --- | --- | --- | --- | --- |
-| contacts | People tied to the listing | list of nested objects | yes for published+ (at least one) | see rows below |
 | contacts[].name | Person or firm name | text | yes (each contact) | `Jordan Lee` |
 | contacts[].role | Why they appear on the listing | text (suggested labels) | yes (each contact) | `broker`, `owner_rep` |
 | contacts[].email | Email if used | text | one of email/phone required | `jordan@example.com` |
@@ -72,7 +71,6 @@ Ownership is a closed relationship, not a sentence typed differently every time.
 
 | Field | Meaning | Shape | Required? | Example |
 | --- | --- | --- | --- | --- |
-| ownership | How contacts relate to the asset | list of nested objects | yes for published+ | see rows below |
 | ownership[].contactNameOrId | Which contact the row refers to | text | yes (each row) | `Jordan Lee` or contact id |
 | ownership[].relationship | Relationship to the asset | fixed choice | yes (each row) | `primary_owner`, `co_owner`, `broker` |
 | ownership[].sharePercent | Optional ownership share | number | no | `60` |
