@@ -44,5 +44,5 @@ export interface InvestorListing {
   primaryContactId: string;
 
   /** How each related contact stands to the asset. */
-  ownership: Ownership[];
+  ownership: Ownership;
 }
