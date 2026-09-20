@@ -29,8 +29,11 @@ export interface InvestorListingBase {
   /** Nested asking price, currency, and optional return metrics. */
   financials: FinancialSummary;
 
-  /** People tied to the listing; a visible listing needs at least one. */
-  contacts: InvestorContact[];
+  /**
+   * People tied to the listing. A visible listing needs at least one reachable
+   * contact — an empty array is not a complete listing.
+   */
+  contacts: [InvestorContact, ...InvestorContact[]];
 
   /** `InvestorContact.id` of the primary person to reach. */
   primaryContactId: string;
