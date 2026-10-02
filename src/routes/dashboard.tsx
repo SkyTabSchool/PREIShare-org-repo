@@ -6,8 +6,9 @@ export const Route = createFileRoute('/dashboard')({
 
 function DashboardLayout() {
   return (
-    <main>
+    <div data-area="dashboard-layout">
+      <p>PREIshare investor dashboard layout</p>
       <Outlet />
-    </main>
+    </div>
   )
 }
