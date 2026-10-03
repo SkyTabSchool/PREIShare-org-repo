@@ -1,14 +1,38 @@
 # PREIshare Investor Dashboard Shell
 
-TanStack Start + TypeScript starter for the PREIshare investor dashboard (Sprint 3).
+Responsive investor dashboard shell for PREIshare members (Sprint 3): Home, Portfolio, Deals, and Profile, with mock data only.
 
-## Setup
-1. Install Node.js LTS if needed.
-2. From the project root, run: `npm install`
-3. Start the dev server: `npm run dev`
-4. Open the local URL printed in the terminal.
+## Prerequisites
 
-## Project notes
-- Planning docs live in `docs/` (information architecture and component plan).
-- File-based routes live under `src/routes/`.
-- Dashboard area routes (portfolio, deals, profile) are added in a later step—do not invent them in the scaffold.
+- Node.js LTS (npm included)
+- This repo uses npm. Install from `package-lock.json`.
+
+## Cold start
+
+From the project root:
+
+```bash
+npm install
+npm run dev
+```
+
+`npm run dev` starts Vite on port 3000. Open the URL printed in the terminal, then go to `/dashboard`. If 3000 is already in use, use the port Vite prints instead.
+
+## Other scripts
+
+These are the scripts defined in `package.json`:
+
+| Script | Command |
+| --- | --- |
+| Dev server | `npm run dev` |
+| Production build | `npm run build` |
+| Preview the build | `npm run preview` |
+| Typecheck | `npm run typecheck` |
+| Regenerate the route tree | `npm run generate-routes` |
+
+There is no `test` or `lint` script in `package.json`.
+
+## Docs
+
+- Sprint 3 handoff (demo script, routes, limitations): [docs/sprint3-handoff.md](docs/sprint3-handoff.md)
+- Architecture decisions: [docs/architecture-decisions.md](docs/architecture-decisions.md)
