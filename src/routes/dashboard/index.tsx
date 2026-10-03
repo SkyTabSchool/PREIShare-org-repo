@@ -13,7 +13,7 @@ function DashboardOverviewPage() {
       <p className="sample-data-banner" role="note">
         Demo shell — all figures are placeholders
       </p>
-      <div className="dash-card-grid dashboard-home__stats">
+      <div className="dash-card-grid">
         <StatsCard
           label="Total portfolio value"
           value="$4.2M"
