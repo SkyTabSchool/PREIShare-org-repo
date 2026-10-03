@@ -132,16 +132,3 @@
     transition: none !important;
   }
 }
-
-/*
-  Companion component expectations (agent may apply small className / aria updates):
-  - AppShell root: class "dash-shell", optional "nav-open" when mobile menu open
-  - Sidebar: class "dash-sidebar", role="navigation" or wrap <nav aria-label="Investor">
-  - Header: class "dash-header", includes a visible menu toggle on small screens
-    with aria-expanded and aria-controls pointing at the sidebar id
-  - Main region: <main class="dash-content" id="main-content"> (skip target optional)
-  - Stats / summary grids: class "dash-card-grid"
-  - Portfolio table parent: class "dash-table-wrap"
-  - Icon-only buttons: aria-label="..." (e.g. "Open navigation")
-  - Decorative icons: aria-hidden="true"
-*/
