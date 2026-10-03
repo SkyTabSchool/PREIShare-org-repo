@@ -41,7 +41,7 @@ export function AppShell({ title, children }: AppShellProps) {
   }, [navOpen])
 
   return (
-    <div className="dash-shell app-shell {navOpen ? ' nav-open'}">
+    <div className={`dash-shell app-shell${navOpen ? ' nav-open' : ''}`}>
       <Sidebar id="investor-sidebar" collapsed={isNarrow && !navOpen} />
       <div className="dash-main app-shell-main-column">
         <Header
