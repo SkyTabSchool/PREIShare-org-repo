@@ -13,7 +13,7 @@ function DashboardOverviewPage() {
       <p className="sample-data-banner" role="note">
         Demo shell — all figures are placeholders
       </p>
-      <div className="dashboard-home__stats">
+      <div className="dashboard-home__stats dash-card-grid">
         <StatsCard
           label="Total portfolio value"
           value="$4.2M"
@@ -22,7 +22,7 @@ function DashboardOverviewPage() {
         <StatsCard label="Open deals" value="3" hint="Published or under offer" />
         <StatsCard label="Holdings" value="4" hint="Properties in this portfolio" />
       </div>
-      <div className="dashboard-home__panels">
+      <div className="dashboard-home__panels dash-card-grid">
         <PortfolioSummary totalLabel="100% of portfolio value" />
         <RecentActivity />
       </div>

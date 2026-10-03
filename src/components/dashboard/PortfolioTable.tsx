@@ -55,7 +55,7 @@ export function PortfolioTable({
   return (
     <section className="dashboard-panel" aria-label="Portfolio holdings">
       <h2>Your holdings</h2>
-      <div className="table-wrap">
+      <div className="table-wrap dash-table-wrap">
         <table>
           <thead>
             <tr>

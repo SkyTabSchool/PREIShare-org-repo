@@ -1,0 +1,13 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@plugin",
+      "description": "Load a Tailwind CSS v4 plugin from a package or local file."
+    },
+    {
+      "name": "@theme",
+      "description": "Define Tailwind CSS v4 theme variables such as fonts, colors, and spacing."
+    }
+  ]
+}

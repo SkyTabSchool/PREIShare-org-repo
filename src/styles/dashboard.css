@@ -1,0 +1,147 @@
+/* src/styles/dashboard.css
+   Shared responsive + accessibility polish for the PREIshare investor shell.
+   Import this from the root layout or global stylesheet your scaffold already uses.
+*/
+
+:root {
+  --dash-sidebar-width: 16rem;
+  --dash-header-height: 3.5rem;
+  --dash-gap: 1rem;
+  --dash-radius: 0.5rem;
+  --dash-focus: #1d4ed8;
+  --dash-touch-min: 44px;
+}
+
+/* Page landmarks rely on semantic regions in AppShell; this supports layout */
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.dash-sidebar {
+  width: var(--dash-sidebar-width);
+  flex-shrink: 0;
+}
+
+.dash-main {
+  flex: 1;
+  min-width: 0; /* prevents wide tables from blowing out the flex row */
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-header {
+  min-height: var(--dash-header-height);
+  display: flex;
+  align-items: center;
+  gap: var(--dash-gap);
+  padding: 0.75rem 1rem;
+}
+
+.dash-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dash-gap);
+}
+
+/* Card grids: 1 col mobile → multi-col when space allows */
+.dash-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--dash-gap);
+}
+
+@media (min-width: 640px) {
+  .dash-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .dash-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Tables/lists: allow horizontal scroll instead of page overflow */
+.dash-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly interactive targets */
+.dash-nav a,
+.dash-nav button,
+.dash-header button {
+  min-height: var(--dash-touch-min);
+  min-width: var(--dash-touch-min);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Keyboard focus — do not remove outlines without a replacement */
+.dash-nav a:focus-visible,
+.dash-nav button:focus-visible,
+.dash-header a:focus-visible,
+.dash-header button:focus-visible,
+.dash-content a:focus-visible,
+.dash-content button:focus-visible {
+  outline: 2px solid var(--dash-focus);
+  outline-offset: 2px;
+}
+
+/* Narrow viewports: stack shell; sidebar becomes collapsible drawer pattern */
+@media (max-width: 767px) {
+  .dash-shell {
+    flex-direction: column;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+    /* When closed, off-canvas or visually collapsed via .is-open on AppShell */
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .dash-shell.nav-open .dash-sidebar {
+    max-height: 80vh;
+    overflow: auto;
+  }
+
+  .dash-sidebar-backdrop {
+    /* optional dimmed overlay when mobile nav is open */
+  }
+}
+
+/* The in-flow sidebar is always visible from 768px up, so the toggle is only for the collapsed drawer. */
+@media (min-width: 768px) {
+  .dash-header .dash-menu-toggle {
+    display: none;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .dash-sidebar,
+  .dash-shell * {
+    transition: none !important;
+  }
+}
+
+/*
+  Companion component expectations (agent may apply small className / aria updates):
+  - AppShell root: class "dash-shell", optional "nav-open" when mobile menu open
+  - Sidebar: class "dash-sidebar", role="navigation" or wrap <nav aria-label="Investor">
+  - Header: class "dash-header", includes a visible menu toggle on small screens
+    with aria-expanded and aria-controls pointing at the sidebar id
+  - Main region: <main class="dash-content" id="main-content"> (skip target optional)
+  - Stats / summary grids: class "dash-card-grid"
+  - Portfolio table parent: class "dash-table-wrap"
+  - Icon-only buttons: aria-label="..." (e.g. "Open navigation")
+  - Decorative icons: aria-hidden="true"
+*/

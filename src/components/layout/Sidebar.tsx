@@ -2,14 +2,28 @@ import type { ReactNode } from 'react'
 import { NavItems } from './NavItems'
 
 type SidebarProps = {
+  id?: string
   brandLabel?: string
   children?: ReactNode
+  /** True on a narrow screen while the drawer is closed, so hidden links leave the tab order. */
+  collapsed?: boolean
 }
 
 /** Left navigation chrome for the investor dashboard shell. */
-export function Sidebar({ brandLabel = 'PREIshare', children }: SidebarProps) {
+export function Sidebar({
+  id = 'investor-sidebar',
+  brandLabel = 'PREIshare',
+  children,
+  collapsed = false,
+}: SidebarProps) {
   return (
-    <aside className="dashboard-sidebar" aria-label="Investor navigation">
+    <aside
+      id={id}
+      className="dash-sidebar dashboard-sidebar"
+      aria-label="Investor navigation"
+      inert={collapsed ? true : undefined}
+      aria-hidden={collapsed ? true : undefined}
+    >
       <div className="sidebar-brand">{brandLabel}</div>
       <NavItems />
       {children}
