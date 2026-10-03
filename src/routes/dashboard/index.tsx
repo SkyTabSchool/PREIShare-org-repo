@@ -5,9 +5,5 @@ export const Route = createFileRoute('/dashboard/')({
 })
 
 function DashboardOverviewPage() {
-  return (
-    <main>
-      <h1>Dashboard overview</h1>
-    </main>
-  )
+  return <h2>Dashboard overview</h2>
 }
