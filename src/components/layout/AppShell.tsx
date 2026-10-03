@@ -11,12 +11,12 @@ type AppShellProps = {
  * Shared investor chrome: sidebar + header + main content region.
  * Child routes render inside `children` (wired from the dashboard layout route).
  */
-export function AppShell({ title = 'Investor Dashboard', children }: AppShellProps) {
+export function AppShell({ title, children }: AppShellProps) {
   return (
     <div className="app-shell">
       <Sidebar />
       <div className="app-shell-main-column">
-        <Header title={title} />
+        {title !== undefined ? <Header title={title} /> : <Header />}
         <main className="app-shell-content" id="main-content">
           {children}
         </main>
