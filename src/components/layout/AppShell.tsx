@@ -3,8 +3,6 @@ import { useRouterState } from '@tanstack/react-router'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 
-const SIDEBAR_ID = 'investor-sidebar'
-
 type AppShellProps = {
   title?: string
   children: ReactNode
@@ -43,8 +41,8 @@ export function AppShell({ title, children }: AppShellProps) {
   }, [navOpen])
 
   return (
-    <div className={navOpen ? 'dash-shell app-shell nav-open' : 'dash-shell app-shell'}>
-      <Sidebar id={SIDEBAR_ID} collapsed={isNarrow && !navOpen} />
+    <div className='dash-shell app-shell {navOpen ? " nav-open"}'>
+      <Sidebar id="investor-sidebar" collapsed={isNarrow && !navOpen} />
       <div className="dash-main app-shell-main-column">
         <Header
           {...(title !== undefined ? { title } : {})}

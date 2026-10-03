@@ -25,7 +25,9 @@ export function Sidebar({
       aria-hidden={collapsed ? true : undefined}
     >
       <div className="sidebar-brand">{brandLabel}</div>
-      <NavItems />
+      <div className="dash-nav">
+        <NavItems />
+      </div>
       {children}
     </aside>
   )
