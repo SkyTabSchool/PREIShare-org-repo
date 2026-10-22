@@ -33,7 +33,7 @@ Chrome is the frame that stays put. Main is the scrollable area that changes wit
 | Main | Scrollable page content for the active route | Route outlet + widgets | Main |
 
 AppShell is the frame that places Header, Sidebar/MobileNav, and Main together.
-The dashboard layout route (`src/routes/dashboard/route.tsx`) renders the shared header and puts the active child route in the main slot (`Outlet`). The index page is placeholder copy. It does not render metric cards, the portfolio summary, or the activity list.
+The dashboard layout route (`src/routes/dashboard/route.tsx`) renders `AppShell` and puts the active child route in the main slot (`<Outlet />` passed as `children`). The index page is placeholder copy. It does not render metric cards, the portfolio summary, or the activity list.
 
 ```text
 Tablet and desktop (sidebar in the flow)
@@ -72,15 +72,15 @@ Leave `/`, `/about`, and `src/routes/__root.tsx` alone. The layout file is `src/
 
 ## Component inventory
 
-Chrome components live under `src/components/layout/`. Home widgets live under `src/components/dashboard/`. Later steps edit these files in place.
+`AppShell` and `Header` for this frame live under `src/components/dashboard/`. Sidebar and nav labels stay under `src/components/layout/`. Home widgets also live under `src/components/dashboard/`. Later steps edit these files in place.
 
 ### AppShell
 
 - **Region:** Chrome (the frame).
 - **Responsibility:** Outer dashboard frame; arranges header, nav, and main.
-- **Parent:** Dashboard layout route (`src/routes/dashboard/route.tsx`) when a later step mounts this frame. The layout file currently renders its own header and `<Outlet />`.
-- **Children:** Header, Sidebar, MobileNav, main content slot.
-- **Props (beginner):** `children` (the page content to show in main).
+- **Parent:** Dashboard layout route (`src/routes/dashboard/route.tsx`). The layout wraps `<Outlet />` in `AppShell`.
+- **Children:** Header, a reserved sidebar region, and the main content slot.
+- **Props (beginner):** `children` (the page content to show in main). Optional `title` is forwarded to Header. Optional `sidebar` fills the side region; until Sidebar is passed, the region shows a placeholder.
 - **State:** AppShell owns whether the mobile nav is open. It closes the nav when the route changes. Header and MobileNav only receive that state.
 
 ### Header
@@ -89,8 +89,8 @@ Chrome components live under `src/components/layout/`. Home widgets live under `
 - **Responsibility:** Top bar with PREIshare branding and a simple status/user placeholder. No account menu and no sign-out.
 - **Parent:** AppShell.
 - **Children:** none required. On small screens it also shows the menu button that opens MobileNav.
-- **Props:** `title` (text, optional—default “PREIshare”).
-- **Placeholder label:** a static word such as “Investor” is enough. It is not a signed-in profile.
+- **Props:** `title` (text, optional—default “Dashboard”, shown under the PREIshare brand). Optional `actions` for a later right-side slot.
+- **Placeholder label:** a static word, “Investor”. It is not a signed-in profile and not a session object.
 
 ### Sidebar
 
@@ -178,15 +178,15 @@ Edit existing files. Add MobileNav only if a later prompt asks to split the draw
 
 | Component | File | What to do |
 |-----------|------|------------|
-| AppShell | `src/components/layout/AppShell.tsx` | Edit in place. Owns open state. |
-| Header | `src/components/layout/Header.tsx` | Edit in place. Branding, user placeholder, menu button on mobile. |
+| AppShell | `src/components/dashboard/AppShell.tsx` | Header, reserved sidebar region, main slot for `children`. |
+| Header | `src/components/dashboard/Header.tsx` | PREIshare branding, optional title, Investor placeholder. |
 | Sidebar | `src/components/layout/Sidebar.tsx` | Edit in place. Tablet/desktop links. |
 | MobileNav | `src/components/layout/MobileNav.tsx` | Optional extract. Today the drawer is Sidebar. |
 | Nav labels | `src/components/layout/navConfig.ts` | Source for Home, Portfolio, Deals, Profile. |
 | MetricCard | `src/components/dashboard/StatsCard.tsx` | Edit in place. Do not add a second tile component. |
 | PortfolioSummary | `src/components/dashboard/PortfolioSummary.tsx` | Edit in place. |
 | RecentActivity | `src/components/dashboard/RecentActivity.tsx` | Edit in place. |
-| Layout route | `src/routes/dashboard/route.tsx` | Shared header and outlet only. |
+| Layout route | `src/routes/dashboard/route.tsx` | Wraps `<Outlet />` in `AppShell`. Keep the existing `createFileRoute('/dashboard')` config. |
 | Home page | `src/routes/dashboard/index.tsx` | Placeholder home copy. Widget composition comes later. |
 
 ## Out of scope (prevent scope creep)
