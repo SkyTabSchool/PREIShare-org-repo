@@ -1,18 +1,24 @@
 // Layout route for everything under /dashboard.
-// Session check uses the browser Supabase client (anon key + sponsor session).
-// ssr is off so beforeLoad runs in the browser, where that session is stored.
-// Do not import src/lib/auth/session.ts or the service-role server client here.
+// beforeLoad calls the server session helper. The helper uses the service-role
+// client, so it is reached through a server function and not imported by the browser.
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 import { AppShell } from '../../components/dashboard/AppShell'
-import { createBrowserSupabaseClient } from '../../lib/supabase/client'
+import { getUser, signOut } from '../../lib/auth/session'
+
+const readSessionUser = createServerFn({ method: 'GET' }).handler(async () => {
+  return getUser()
+})
+
+const signOutSession = createServerFn({ method: 'POST' }).handler(async () => {
+  await signOut()
+})
 
 export const Route = createFileRoute('/dashboard')({
-  ssr: false,
   beforeLoad: async () => {
-    const supabase = createBrowserSupabaseClient()
-    const { data, error } = await supabase.auth.getUser()
-    if (error || !data.user) {
+    const user = await readSessionUser()
+    if (!user) {
       throw redirect({ to: '/auth/login' })
     }
   },
@@ -26,12 +32,7 @@ function DashboardLayout() {
   async function handleSignOut() {
     setSignOutError(null)
     try {
-      const supabase = createBrowserSupabaseClient()
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        setSignOutError(error.message)
-        return
-      }
+      await signOutSession()
       await navigate({ to: '/auth/login' })
     } catch (caught) {
       setSignOutError(caught instanceof Error ? caught.message : 'Sign out failed.')
