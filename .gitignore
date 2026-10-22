@@ -2,8 +2,11 @@ node_modules
 .DS_Store
 dist
 dist-ssr
-*.local
+# Real env files stay untracked. Commit .env.example (placeholders only).
 .env
+.env.*
+!.env.example
+*.local
 .nitro
 .tanstack
 .wrangler
