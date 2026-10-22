@@ -1,70 +1,72 @@
 export type ActivityItem = {
   id: string
-  title: string
-  detail: string
-  dateLabel: string
+  /** Already-formatted time label for display, e.g. "Mar 18 · 2:04 PM" */
+  whenLabel: string
+  description: string
+  /** Optional activity type, e.g. "Distribution" or "Notice" */
+  category?: string
 }
 
 export type RecentActivityProps = {
   title?: string
-  items?: ActivityItem[]
-  isSampleData?: boolean
+  items: ActivityItem[]
+  /** Shown when `items` is empty. The list is skipped in that case. */
+  emptyMessage?: string
 }
 
-/** Sample investor events. Not the open-deals catalog. */
-const DEFAULT_MOCK_ACTIVITY: ActivityItem[] = [
+/** MOCK PLACEHOLDER — replace with real activity feed later */
+export const MOCK_RECENT_ACTIVITY: ActivityItem[] = [
   {
     id: 'a1',
-    title: 'Cedar Court published',
-    detail: 'New multifamily listing to review',
-    dateLabel: 'Sep 28, 2026',
+    whenLabel: 'Mar 18 · 2:04 PM',
+    description: 'Distribution posted for Riverfront Multifamily',
+    category: 'Distribution',
   },
   {
     id: 'a2',
-    title: 'Maple & 4th moved to under offer',
-    detail: 'Retail holding status updated',
-    dateLabel: 'Sep 14, 2026',
+    whenLabel: 'Mar 17 · 11:20 AM',
+    description: 'Quarterly report available for Cedar Retail Plaza',
+    category: 'Document',
   },
   {
     id: 'a3',
-    title: 'Harbor Warehouse value updated',
-    detail: 'Industrial share refreshed in this snapshot',
-    dateLabel: 'Aug 30, 2026',
-  },
-  {
-    id: 'a4',
-    title: 'Oak Street Shops marked sold',
-    detail: 'Kept in history after close',
-    dateLabel: 'Aug 12, 2026',
+    whenLabel: 'Mar 15 · 9:00 AM',
+    description: 'Capital call reminder — Harbor Industrial',
+    category: 'Notice',
   },
 ]
 
+/**
+ * Recent investor activity list for the dashboard home.
+ * Presentational only — pass items in; this component does not fetch.
+ */
 export function RecentActivity({
   title = 'Recent activity',
-  items = DEFAULT_MOCK_ACTIVITY,
-  isSampleData = true,
+  items,
+  emptyMessage = 'No recent activity yet.',
 }: RecentActivityProps) {
+  const isEmpty = items.length === 0
+
   return (
-    <section className="recent-activity" aria-labelledby="recent-activity-heading">
-      <div className="recent-activity__header">
-        <h2 id="recent-activity-heading">{title}</h2>
-        {isSampleData ? (
-          <p className="sample-data-banner" role="note">
-            Sample activity — not connected to a live feed
-          </p>
-        ) : null}
-      </div>
-      <ol className="recent-activity__list">
-        {items.map((item) => (
-          <li key={item.id} className="recent-activity__item">
-            <div className="recent-activity__body">
-              <p className="recent-activity__title">{item.title}</p>
-              <p className="recent-activity__detail">{item.detail}</p>
-            </div>
-            <time className="recent-activity__date">{item.dateLabel}</time>
-          </li>
-        ))}
-      </ol>
+    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm" aria-labelledby="recent-activity-heading">
+      <h2 id="recent-activity-heading" className="text-lg font-semibold text-slate-900">
+        {title}
+      </h2>
+      {isEmpty ? (
+        <p className="mt-3 text-sm text-slate-600">{emptyMessage}</p>
+      ) : (
+        <ul className="mt-4 space-y-3">
+          {items.map((item) => (
+            <li key={item.id} className="border-l-2 border-slate-200 pl-3">
+              <p className="text-xs text-slate-500">{item.whenLabel}</p>
+              <p className="text-sm font-medium text-slate-800">{item.description}</p>
+              {item.category ? (
+                <p className="text-xs text-slate-500">{item.category}</p>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
