@@ -33,7 +33,7 @@ Chrome is the frame that stays put. Main is the scrollable area that changes wit
 | Main | Scrollable page content for the active route | Route outlet + widgets | Main |
 
 AppShell is the frame that places Header, Sidebar/MobileNav, and Main together.
-The dashboard layout route (`src/routes/dashboard.tsx`) renders AppShell and puts the active child route in the main slot (`Outlet`). AppShell does not render metric cards, the portfolio summary, or the activity list.
+The dashboard layout route (`src/routes/dashboard/route.tsx`) renders the shared header and puts the active child route in the main slot (`Outlet`). The index page is placeholder copy. It does not render metric cards, the portfolio summary, or the activity list.
 
 ```text
 Tablet and desktop (sidebar in the flow)
@@ -63,12 +63,12 @@ Labels are investor words from `src/components/layout/navConfig.ts`. Do not show
 
 | Label | Path | What Main shows |
 |-------|------|-----------------|
-| Home | `/dashboard` | Metric cards, portfolio summary, recent activity |
+| Home | `/dashboard` | Placeholder home copy. Metric cards, portfolio summary, and recent activity belong on this page in a later step. |
 | Portfolio | `/dashboard/portfolio` | Portfolio page already in the tree (deeper tools later) |
 | Deals | `/dashboard/deals` | Open-deals page already in the tree |
 | Profile | `/dashboard/profile` | Profile placeholder. Auth and account management stay later |
 
-Leave `/`, `/about`, and `src/routes/__root.tsx` alone. Do not add `src/routes/dashboard/route.tsx` beside `src/routes/dashboard.tsx`. Do not hand-edit `src/routeTree.gen.ts`.
+Leave `/`, `/about`, and `src/routes/__root.tsx` alone. The layout file is `src/routes/dashboard/route.tsx`. Do not add `src/routes/dashboard.tsx` beside it. Do not hand-edit `src/routeTree.gen.ts`.
 
 ## Component inventory
 
@@ -78,7 +78,7 @@ Chrome components live under `src/components/layout/`. Home widgets live under `
 
 - **Region:** Chrome (the frame).
 - **Responsibility:** Outer dashboard frame; arranges header, nav, and main.
-- **Parent:** Dashboard layout route (`src/routes/dashboard.tsx`).
+- **Parent:** Dashboard layout route (`src/routes/dashboard/route.tsx`) when a later step mounts this frame. The layout file currently renders its own header and `<Outlet />`.
 - **Children:** Header, Sidebar, MobileNav, main content slot.
 - **Props (beginner):** `children` (the page content to show in main).
 - **State:** AppShell owns whether the mobile nav is open. It closes the nav when the route changes. Header and MobileNav only receive that state.
@@ -186,8 +186,8 @@ Edit existing files. Add MobileNav only if a later prompt asks to split the draw
 | MetricCard | `src/components/dashboard/StatsCard.tsx` | Edit in place. Do not add a second tile component. |
 | PortfolioSummary | `src/components/dashboard/PortfolioSummary.tsx` | Edit in place. |
 | RecentActivity | `src/components/dashboard/RecentActivity.tsx` | Edit in place. |
-| Layout route | `src/routes/dashboard.tsx` | Shell only. |
-| Home page | `src/routes/dashboard/index.tsx` | Widget composition only. |
+| Layout route | `src/routes/dashboard/route.tsx` | Shared header and outlet only. |
+| Home page | `src/routes/dashboard/index.tsx` | Placeholder home copy. Widget composition comes later. |
 
 ## Out of scope (prevent scope creep)
 
@@ -196,7 +196,7 @@ Edit existing files. Add MobileNav only if a later prompt asks to split the draw
 - Payments, documents vault, tax exports, PDF export
 - Charts libraries, map views, and live time-series charts
 - Additional routes beyond the routing plan, including `/dashboard/activity`, unless a later prompt asks for a full activity feed
-- A second layout file (`src/routes/dashboard/route.tsx`) or edits to `src/routeTree.gen.ts`
+- A second layout file (`src/routes/dashboard.tsx`) or edits to `src/routeTree.gen.ts`
 - Replacing or deleting `__root.tsx`, `/`, or `/about`
 - Design-system package extraction or animation-heavy UI
 - Editing portfolio holdings, live trades, or other deep investment tools

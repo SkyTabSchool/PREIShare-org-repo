@@ -1,31 +1,20 @@
+// Default page at exactly /dashboard.
 import { createFileRoute } from '@tanstack/react-router'
-import { PortfolioSummary } from '../../components/dashboard/PortfolioSummary'
-import { RecentActivity } from '../../components/dashboard/RecentActivity'
-import { StatsCard } from '../../components/dashboard/StatsCard'
 
 export const Route = createFileRoute('/dashboard/')({
-  component: DashboardOverviewPage,
+  component: DashboardHome,
 })
 
-function DashboardOverviewPage() {
+function DashboardHome() {
   return (
-    <div className="dashboard-home">
-      <p className="sample-data-banner" role="note">
-        Demo shell — all figures are placeholders
+    <section aria-labelledby="dashboard-home-heading">
+      <h2 id="dashboard-home-heading" className="text-xl font-semibold">
+        Welcome back
+      </h2>
+      <p className="mt-2 max-w-prose text-slate-600">
+        Portfolio metrics and recent activity will appear here. This placeholder
+        confirms the /dashboard route tree is wired correctly.
       </p>
-      <div className="dash-card-grid">
-        <StatsCard
-          label="Total portfolio value"
-          value="$4.2M"
-          hint="Mock total across this member's holdings"
-        />
-        <StatsCard label="Open deals" value="3" hint="Published or under offer" />
-        <StatsCard label="Holdings" value="4" hint="Properties in this portfolio" />
-      </div>
-      <div className="dashboard-home__panels dash-card-grid">
-        <PortfolioSummary totalLabel="100% of portfolio value" />
-        <RecentActivity />
-      </div>
-    </div>
+    </section>
   )
 }

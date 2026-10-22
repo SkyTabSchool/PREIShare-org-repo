@@ -6,6 +6,8 @@
 **App URL tested:** http://localhost:3002  
 **Sources of truth:** `docs/investor-dashboard-brief.md`, `docs/dashboard-ia.md`, `docs/component-plan.md`
 
+The walkthrough below records the 2026-10-03 shell. The layout file is now `src/routes/dashboard/route.tsx`, and `/dashboard` renders placeholder home copy instead of the stats row described in R1.
+
 Ports 3000 and 3001 were already in use, so this walkthrough used the Vite dev server on port 3002.
 
 ## How to use this checklist

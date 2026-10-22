@@ -31,15 +31,15 @@ Source: [`docs/investor-dashboard-brief.md`](investor-dashboard-brief.md).
 
 | Investor goal | How the shell meets it |
 | --- | --- |
-| See a home overview immediately | `/dashboard` shows three stats cards, an allocation snapshot, and a recent-activity list |
-| Reach Portfolio, Deals, and Profile without leaving the shell | Sidebar links stay on screen; the parent route wraps every child in `AppShell` |
+| See a home overview immediately | `/dashboard` shows the layout header and placeholder home copy (“Welcome back”). Metric widgets are not mounted on this page. |
+| Reach Portfolio, Deals, and Profile without leaving the shell | The parent route (`src/routes/dashboard/route.tsx`) wraps every child in the shared header and `<Outlet />` |
 | Trust the layout on phone and desktop | At 1280px the sidebar, header, and main region are all visible. At 375px the sidebar collapses into a drawer and page content does not force horizontal scroll |
 
 Must-have areas from the brief, all present:
 
 | Area | Route | What the investor sees |
 | --- | --- | --- |
-| Home overview | `/dashboard` | Stats cards, portfolio summary, recent activity |
+| Home overview | `/dashboard` | Placeholder copy: “Welcome back” and a sentence that metrics will appear here |
 | Portfolio | `/dashboard/portfolio` | Holdings table |
 | Deals | `/dashboard/deals` | Open-deal cards |
 | Profile | `/dashboard/profile` | Name and contact card |
@@ -49,7 +49,7 @@ Explicit non-goals kept out of this sprint: sign-in, live Supabase or PostgreSQL
 ## What shipped
 
 - TanStack Start + TypeScript app with file-based routes under `src/routes/`.
-- Dashboard layout route `src/routes/dashboard.tsx` renders `AppShell` and an `Outlet` for the four child pages.
+- Dashboard layout route `src/routes/dashboard/route.tsx` renders the shared header and an `Outlet` for the child pages.
 - Shared chrome: `AppShell`, `Sidebar`, layout `Header`, `navConfig` (`dashboardNavItems`), and `NavItems` with `aria-current="page"` on the active link.
 - Home widgets: `StatsCard`, `PortfolioSummary`, `RecentActivity`.
 - Area shells: `PortfolioTable`, `DealsList`, `ProfileCard`.
@@ -64,12 +64,12 @@ Investor routes (the full page set from the brief):
 
 | URL | Route file | Route id | Nav label | Header title | Page component |
 | --- | --- | --- | --- | --- | --- |
-| `/dashboard` | `src/routes/dashboard/index.tsx` | `/dashboard/` | Home | Dashboard overview | `DashboardOverviewPage` |
+| `/dashboard` | `src/routes/dashboard/index.tsx` | `/dashboard/` | Home | Welcome back | `DashboardHome` (placeholder copy) |
 | `/dashboard/portfolio` | `src/routes/dashboard/portfolio.tsx` | `/dashboard/portfolio` | Portfolio | Your portfolio | `PortfolioPage` → `PortfolioTable` |
 | `/dashboard/deals` | `src/routes/dashboard/deals.tsx` | `/dashboard/deals` | Deals | Open deals | `DealsPage` → `DealsList` |
 | `/dashboard/profile` | `src/routes/dashboard/profile.tsx` | `/dashboard/profile` | Profile | Your profile | `ProfilePage` → `ProfileCard` |
 
-Parent layout: `src/routes/dashboard.tsx` (`/dashboard`) wraps those four pages in `AppShell`. Labels, paths, and titles live in `src/components/layout/navConfig.ts`.
+Parent layout: `src/routes/dashboard/route.tsx` (`/dashboard`) wraps those pages with the shared header and `<Outlet />`. There is no `src/routes/dashboard.tsx`. Labels, paths, and titles live in `src/components/layout/navConfig.ts`.
 
 Other routes that already existed and are outside the investor shell:
 
@@ -97,7 +97,9 @@ Locked names from [`docs/component-plan.md`](component-plan.md). Dashboard heade
 
 ### Dashboard home (`/dashboard`)
 
-| Component | File | Mock content on screen |
+The index route does not mount these widgets. They remain in the repo for a later home-page step.
+
+| Component | File | Mock content defined in the component |
 | --- | --- | --- |
 | `StatsCard` | `src/components/dashboard/StatsCard.tsx` | Total portfolio value **$4.2M**, Open deals **3**, Holdings **4** |
 | `PortfolioSummary` | `src/components/dashboard/PortfolioSummary.tsx` | Multifamily 45% $1.89M, Retail 25% $1.05M, Industrial 20% $840K, Office 10% $420K |
@@ -163,7 +165,7 @@ npm run preview
 
 ## Short demo script
 
-1. Open `/dashboard`. Point at the banner, then the three stats: portfolio value $4.2M, open deals 3, holdings 4. Show the allocation mix (Multifamily 45%) and the recent-activity list.
+1. Open `/dashboard`. Point at the layout heading “Investor Dashboard”, then the index heading “Welcome back” and the sentence that metrics will appear here.
 2. Use the sidebar: Portfolio (Riverfront Lofts, Cedar Business Park), Deals (Harbor View Residences, Summit Logistics Hub), Profile (Alex Morgan). Call out the header title and the highlighted nav item on each stop.
 3. Resize to about 375px. Use **Open navigation**, pick Deals, and show the drawer close onto Open deals.
 4. Say clearly: these values are mock placeholders for Sprint 3. They are not a member’s live portfolio.
@@ -188,7 +190,7 @@ npm run preview
 4. GitHub Actions CI on pull requests: install, `npm run typecheck`, and `npm run build`. Add test and lint scripts before gating on them.
 5. Empty, loading, and error states for each data widget, plus a fix for the closed-drawer 33px gap if mobile chrome is still in scope.
 
-Foundations to keep: file-based routes under `src/routes/dashboard/`, one `AppShell`, and `dashboardNavItems` as the only nav list. Next sprint should add data at those boundaries rather than a second layout.
+Foundations to keep: file-based routes under `src/routes/dashboard/`, one layout at `src/routes/dashboard/route.tsx`, and `dashboardNavItems` as the only nav list. Next sprint should add data at those boundaries rather than a second layout file.
 
 ## References
 

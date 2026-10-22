@@ -13,19 +13,19 @@ Companion docs: [`docs/sprint3-handoff.md`](sprint3-handoff.md), [`docs/investor
 ## ADR-001: TanStack Start with file-based routes
 
 - **Context:** Each investor area needs a stable URL, and later sprints need a place to attach data loading without redesigning navigation. The information architecture already names four paths under `/dashboard`.
-- **Decision:** Use TanStack Start and TypeScript file-based routing. `src/routes/dashboard.tsx` is the parent layout. Child files are `src/routes/dashboard/index.tsx` (`/dashboard`), `portfolio.tsx`, `deals.tsx`, and `profile.tsx`. The generated tree in `src/routeTree.gen.ts` stays generated (`npm run generate-routes`).
+- **Decision:** Use TanStack Start and TypeScript file-based routing. `src/routes/dashboard/route.tsx` is the parent layout. Child files are `src/routes/dashboard/index.tsx` (`/dashboard`), `portfolio.tsx`, `deals.tsx`, and `profile.tsx`. The generated tree in `src/routeTree.gen.ts` stays generated (`npm run generate-routes`).
 - **Consequences:** The URL map matches the IA. A new investor page is a route file plus a `dashboardNavItems` entry, not a hand-built router table. Loaders and server functions can attach to a route later without a rewrite. Unknown paths already fall through to the framework Not Found page.
 
 ## ADR-002: Shared AppShell layout
 
 - **Context:** Home, Portfolio, Deals, and Profile all need the same chrome: sidebar, header, and a main content region. Duplicating that markup on each page would drift labels, titles, and the mobile drawer.
-- **Decision:** `AppShell` (`src/components/layout/AppShell.tsx`) frames every dashboard page. The parent route renders `<AppShell><Outlet /></AppShell>`. `Sidebar`, layout `Header` (`src/components/layout/Header.tsx`), and `NavItems` read labels, paths, and titles from `dashboardNavItems` in `src/components/layout/navConfig.ts`. Page files render only their widgets.
+- **Decision:** `src/routes/dashboard/route.tsx` frames every dashboard page with a shared header and `<Outlet />`. `AppShell` (`src/components/layout/AppShell.tsx`) remains the chrome component for a later step. `Sidebar`, layout `Header` (`src/components/layout/Header.tsx`), and `NavItems` read labels, paths, and titles from `dashboardNavItems` in `src/components/layout/navConfig.ts`. Page files render only their own content.
 - **Consequences:** Layout and drawer behavior change in one place. Page files stay focused on content. Adding a route is a config change plus a route file. The header currently shows the page title from `getPageTitle`. A compact member identity in the header was deferred; name and contact live on `ProfileCard`.
 
 ## ADR-003: Mock data boundary for the shell
 
 - **Context:** Sprint 3 has to be demoable before authentication or a database exists. A hidden fake API would look like production and make the next swap harder to see.
-- **Decision:** Widgets take simple props and fall back to inline mock constants. Examples: stats on `src/routes/dashboard/index.tsx`, `DEFAULT_MOCK_HOLDINGS` in `PortfolioSummary`, `mockHoldings` in `PortfolioTable`, `mockDeals` in `DealsList`, and `mockProfile` in `ProfileCard`. No Supabase client and no network fetch sit behind these components. The home page labels the figures with the banner “Demo shell — all figures are placeholders.”
+- **Decision:** Widgets take simple props and fall back to inline mock constants. The home route (`src/routes/dashboard/index.tsx`) is placeholder copy and does not mount those widgets yet. `DEFAULT_MOCK_HOLDINGS` in `PortfolioSummary`, `mockHoldings` in `PortfolioTable`, `mockDeals` in `DealsList`, and `mockProfile` in `ProfileCard` stay inline. No Supabase client and no network fetch sit behind these components.
 - **Consequences:** Stakeholders can tell sample content from live holdings. Next sprint can replace a constant or a prop at the component or route boundary. Counts are not guaranteed to agree across widgets: the home card says 3 open deals while `DealsList` renders two. That drift stays visible until live queries own both numbers.
 
 ## ADR-004: Responsive CSS and an accessibility baseline
