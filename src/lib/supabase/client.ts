@@ -1,9 +1,13 @@
 // BROWSER-SAFE: public URL + anon key only.
 // Reads VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY via import.meta.env.
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
+let browserClient: SupabaseClient<Database> | undefined
+
 export function createBrowserSupabaseClient() {
+  if (browserClient) return browserClient
+
   const url = import.meta.env.VITE_SUPABASE_URL
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
@@ -18,5 +22,6 @@ export function createBrowserSupabaseClient() {
     )
   }
 
-  return createClient<Database>(url, anonKey)
+  browserClient = createClient<Database>(url, anonKey)
+  return browserClient
 }

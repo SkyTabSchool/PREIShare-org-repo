@@ -1,8 +1,9 @@
 // Browser form. Uses the anon-key browser client only.
 // On success → /dashboard. On failure → show the error text.
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { useState, type FormEvent } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import { createBrowserSupabaseClient } from '../../lib/supabase/client'
+import { establishSession } from '../../server/auth'
 
 type LoginSearch = {
   notice?: 'confirm'
@@ -24,18 +25,32 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     setPending(true)
     try {
       const supabase = createBrowserSupabaseClient()
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (signInError) {
         setError(signInError.message)
+        return
+      }
+      if (!data.session) {
+        setError('Sign in did not return a session. Confirm your email, then try again.')
+        return
+      }
+      const established = await establishSession({
+        data: {
+          accessToken: data.session.access_token,
+          refreshToken: data.session.refresh_token,
+        },
+      })
+      if (!established.ok) {
+        setError(established.error)
         return
       }
       await navigate({ to: '/dashboard' })

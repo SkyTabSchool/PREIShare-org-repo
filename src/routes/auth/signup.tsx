@@ -2,8 +2,9 @@
 // On success with a session → /dashboard.
 // If email confirmation is required (no session yet) → /auth/login.
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { useState, type FormEvent } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import { createBrowserSupabaseClient } from '../../lib/supabase/client'
+import { establishSession } from '../../server/auth'
 
 export const Route = createFileRoute('/auth/signup')({
   component: SignupPage,
@@ -16,7 +17,7 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     setPending(true)
@@ -32,6 +33,16 @@ function SignupPage() {
       }
       if (!data.session) {
         await navigate({ to: '/auth/login', search: { notice: 'confirm' } })
+        return
+      }
+      const established = await establishSession({
+        data: {
+          accessToken: data.session.access_token,
+          refreshToken: data.session.refresh_token,
+        },
+      })
+      if (!established.ok) {
+        setError(established.error)
         return
       }
       await navigate({ to: '/dashboard' })

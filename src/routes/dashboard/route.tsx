@@ -1,6 +1,6 @@
 // Layout route for everything under /dashboard.
-// beforeLoad calls the server session helper. The helper uses the service-role
-// client, so it is reached through a server function and not imported by the browser.
+// beforeLoad calls the server session helper. Sign-in stores the sponsor tokens
+// in httpOnly cookies; the helper validates them and is not imported by the browser.
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
