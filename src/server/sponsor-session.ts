@@ -39,7 +39,8 @@ function toStartCookieOptions(
   return next
 }
 
-function createRequestSupabase() {
+/** Anon-key client for this request. Cookies carry the sponsor session so RLS applies. */
+export function createRequestSupabase() {
   return createSupabaseServerClient({
     get(key) {
       const value = getCookie(key)

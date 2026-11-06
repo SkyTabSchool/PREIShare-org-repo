@@ -42,6 +42,9 @@ function DashboardLayout() {
           <Link to="/dashboard" className="text-sm underline">
             Home
           </Link>
+          <Link to="/dashboard/properties" className="text-sm underline">
+            Properties
+          </Link>
           <button type="button" onClick={() => void handleSignOut()} className="text-sm underline">
             Sign out
           </button>
