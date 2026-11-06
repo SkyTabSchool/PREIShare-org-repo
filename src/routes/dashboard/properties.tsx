@@ -2,7 +2,7 @@
 // Rows are loaded with the session-aware server client. listings_select_own
 // (owner_id = auth.uid()) is the access control. Do not add a sponsor_id or
 // owner_id filter here, and do not switch this query to the service-role client.
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, redirect, useChildMatches } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseHeader } from '@tanstack/react-start/server'
 import type { Database } from '../../lib/supabase/types'
@@ -50,16 +50,26 @@ export const Route = createFileRoute('/dashboard/properties')({
 })
 
 function PropertiesPage() {
+  const childMatches = useChildMatches()
   const { properties, error } = Route.useLoaderData()
+
+  if (childMatches.length > 0) {
+    return <Outlet />
+  }
 
   return (
     <section className="space-y-4">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Your properties</h1>
-        <p className="text-sm text-gray-600">
-          Listings you are allowed to manage. Visibility is enforced by the
-          database (RLS), not only by this page.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold">Your properties</h1>
+          <p className="text-sm text-gray-600">
+            Listings you are allowed to manage. Visibility is enforced by the
+            database (RLS), not only by this page.
+          </p>
+        </div>
+        <Link to="/dashboard/properties/new" className="text-sm font-medium underline">
+          Add property
+        </Link>
       </header>
 
       {error ? (
