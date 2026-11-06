@@ -2,7 +2,7 @@
 // On success → /dashboard. On failure → show the error text.
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState, type SubmitEvent } from 'react'
-import { createBrowserSupabaseClient } from '../../lib/supabase/client'
+import { supabaseBrowser } from '../../lib/supabase.client'
 import { establishSession } from '../../server/auth'
 
 type LoginSearch = {
@@ -30,7 +30,7 @@ function LoginPage() {
     setError(null)
     setPending(true)
     try {
-      const supabase = createBrowserSupabaseClient()
+      const supabase = supabaseBrowser
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,

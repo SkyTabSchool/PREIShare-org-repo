@@ -2,7 +2,7 @@
 // The service-role client has no browser session. Sponsor identity comes from
 // httpOnly cookies set after sign-in, then checked with auth.getUser(jwt).
 import { deleteCookie, getCookie, setCookie } from '@tanstack/react-start/server'
-import { createServerSupabaseClient } from '../supabase/server'
+import { createSupabaseServiceRoleClient } from '../supabase.server'
 
 const ACCESS_COOKIE = 'preishare_access_token'
 const REFRESH_COOKIE = 'preishare_refresh_token'
@@ -15,7 +15,7 @@ export async function getUser() {
   const refreshToken = getCookie(REFRESH_COOKIE)
   if (!accessToken && !refreshToken) return null
 
-  const supabase = createServerSupabaseClient()
+  const supabase = createSupabaseServiceRoleClient()
 
   if (accessToken) {
     const { data, error } = await supabase.auth.getUser(accessToken)
@@ -40,7 +40,7 @@ export async function adoptSession(
   accessToken: string,
   refreshToken: string,
 ): Promise<AdoptSessionResult> {
-  const supabase = createServerSupabaseClient()
+  const supabase = createSupabaseServiceRoleClient()
   const { data, error } = await supabase.auth.getUser(accessToken)
   if (error || !data.user) {
     return { ok: false, error: 'Sign in could not be verified. Try again.' }
@@ -56,7 +56,7 @@ export async function signOut() {
   if (!accessToken) return
 
   try {
-    const supabase = createServerSupabaseClient()
+    const supabase = createSupabaseServiceRoleClient()
     await supabase.auth.admin.signOut(accessToken)
   } catch {
     // The cookies are already gone, so the dashboard guard treats this as signed out.

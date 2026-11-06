@@ -1,9 +1,10 @@
 // SERVER-ONLY. Do not import this module from browser components.
 // List, create, and update public.property_listings for the signed-in sponsor.
 //
-// createServerSupabaseClient uses the service-role key and bypasses RLS, so
-// every query sets or filters owner_id from getUser(). The request body cannot
-// choose the owner. UI routes are not wired here.
+// createSupabaseServiceRoleClient bypasses RLS, so every query sets or filters
+// owner_id from getUser(). The request body cannot choose the owner.
+// Sponsor reads and writes that must keep RLS belong on createSupabaseServerClient
+// (anon key + the sponsor session). UI routes are not wired here.
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseHeader } from '@tanstack/react-start/server'
 import { z } from 'zod'
@@ -14,7 +15,7 @@ import {
   type CreateListingInput,
   type UpdateListingInput,
 } from '../lib/listings/schema'
-import { createServerSupabaseClient } from '../lib/supabase/server'
+import { createSupabaseServiceRoleClient } from '../lib/supabase.server'
 import type { Database } from '../lib/supabase/types'
 
 type ListingInsert = Database['public']['Tables']['property_listings']['Insert']
@@ -102,7 +103,7 @@ export const listMyListings = createServerFn({ method: 'GET' }).handler(
       return { ok: false, error: 'You must be signed in to view listings.' }
     }
 
-    const supabase = createServerSupabaseClient()
+    const supabase = createSupabaseServiceRoleClient()
     const { data, error } = await supabase
       .from('property_listings')
       .select(LISTING_COLUMNS)
@@ -139,7 +140,7 @@ export const createListing = createServerFn({ method: 'POST' })
       return { ok: false, error: 'You must be signed in to create a listing.' }
     }
 
-    const supabase = createServerSupabaseClient()
+    const supabase = createSupabaseServiceRoleClient()
     const { data: row, error } = await supabase
       .from('property_listings')
       .insert(createPayload(parsed.data, user.id))
@@ -179,7 +180,7 @@ export const updateListing = createServerFn({ method: 'POST' })
       return { ok: false, error: 'No fields to update.' }
     }
 
-    const supabase = createServerSupabaseClient()
+    const supabase = createSupabaseServiceRoleClient()
     const { data: row, error } = await supabase
       .from('property_listings')
       .update(patch)
