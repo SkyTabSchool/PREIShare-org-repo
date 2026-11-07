@@ -64,7 +64,7 @@ export const createProperty = createServerFn({ method: 'POST' })
   .validator(readCreatePropertyInput)
   .handler(async ({ data }): Promise<CreatePropertyResult> => {
     setResponseHeader('Cache-Control', 'no-store')
-    const supabase = createRequestSupabase()
+    const supabase = await createRequestSupabase()
 
     const {
       data: { user },

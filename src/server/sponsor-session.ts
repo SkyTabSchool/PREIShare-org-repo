@@ -1,13 +1,16 @@
-// Server functions for sponsor sign-in. Uses the anon key plus request cookies.
-// Do not call the service-role client from this module.
+// Server functions for sponsor sign-in.
+// Session tokens live in httpOnly cookies (see lib/auth/session.ts). The anon
+// request client is then seeded from those cookies so RLS still sees auth.uid().
 import { createServerFn } from '@tanstack/react-start'
+import { getCookie, setResponseHeader } from '@tanstack/react-start/server'
+import { createClient } from '@supabase/supabase-js'
 import {
-  deleteCookie,
-  getCookie,
-  setCookie,
-  setResponseHeader,
-} from '@tanstack/react-start/server'
-import { createSupabaseServerClient } from '../lib/supabase.server'
+  adoptSession,
+  getUser,
+  signOut,
+  type AdoptSessionResult,
+} from '../lib/auth/session'
+import type { Database } from '../lib/supabase/types'
 
 export type SponsorSession = {
   user: {
@@ -15,53 +18,59 @@ export type SponsorSession = {
   }
 }
 
-type StartCookieOptions = NonNullable<Parameters<typeof setCookie>[2]>
+const ACCESS_COOKIE = 'preishare_access_token'
+const REFRESH_COOKIE = 'preishare_refresh_token'
 
-function toStartCookieOptions(
-  options?: Record<string, unknown>,
-): StartCookieOptions | undefined {
-  if (!options) return undefined
-
-  const sameSite = options.sameSite
-  const expires = options.expires
-  const next: StartCookieOptions = {}
-
-  if (typeof options.domain === 'string') next.domain = options.domain
-  if (typeof options.path === 'string') next.path = options.path
-  if (typeof options.maxAge === 'number') next.maxAge = options.maxAge
-  if (expires instanceof Date) next.expires = expires
-  if (typeof options.httpOnly === 'boolean') next.httpOnly = options.httpOnly
-  if (typeof options.secure === 'boolean') next.secure = options.secure
-  if (sameSite === 'lax' || sameSite === 'strict' || sameSite === 'none') {
-    next.sameSite = sameSite
+function requireEnv(name: string, value: string | undefined): string {
+  if (!value) {
+    throw new Error(`Missing server env ${name}. See docs/env-var-checklist.md.`)
   }
-
-  return next
+  return value
 }
 
-/** Anon-key client for this request. Cookies carry the sponsor session so RLS applies. */
-export function createRequestSupabase() {
-  return createSupabaseServerClient({
-    get(key) {
-      const value = getCookie(key)
-      return value === undefined ? undefined : { value }
-    },
-    set(key, value, options) {
-      setCookie(key, value, toStartCookieOptions(options))
-    },
-    remove(key, options) {
-      deleteCookie(key, toStartCookieOptions(options))
+/**
+ * Anon-key client for this request, authenticated as the cookie session user.
+ * Prefer this over the service-role client for sponsor reads/writes so RLS applies.
+ */
+export async function createRequestSupabase() {
+  // Refresh/validate first so the access cookie is usable for this request.
+  await getUser()
+
+  const url = requireEnv(
+    'SUPABASE_URL',
+    process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL,
+  )
+  const anonKey = requireEnv(
+    'SUPABASE_ANON_KEY',
+    process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY,
+  )
+  const accessToken = getCookie(ACCESS_COOKIE)
+  const refreshToken = getCookie(REFRESH_COOKIE)
+
+  const supabase = createClient<Database>(url, anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
     },
   })
+
+  if (accessToken && refreshToken) {
+    await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
+  }
+
+  return supabase
 }
 
 export const readSponsorSession = createServerFn({ method: 'GET' }).handler(
   async (): Promise<SponsorSession | null> => {
     setResponseHeader('Cache-Control', 'no-store')
-    const supabase = createRequestSupabase()
-    const { data, error } = await supabase.auth.getUser()
-    if (error || !data.user) return null
-    return { user: { email: data.user.email ?? null } }
+    const user = await getUser()
+    if (!user) return null
+    return { user: { email: user.email ?? null } }
   },
 )
 
@@ -72,29 +81,14 @@ export const storeSponsorSession = createServerFn({ method: 'POST' })
     }
     return input
   })
-  .handler(async ({ data }): Promise<{ ok: true } | { ok: false; error: string }> => {
+  .handler(async ({ data }): Promise<AdoptSessionResult> => {
     setResponseHeader('Cache-Control', 'no-store')
-    const supabase = createRequestSupabase()
-    const { error } = await supabase.auth.setSession({
-      access_token: data.accessToken,
-      refresh_token: data.refreshToken,
-    })
-    if (error) {
-      return {
-        ok: false,
-        error: error.message || 'Sign-in failed. Check your email and password.',
-      }
-    }
-    return { ok: true }
+    return adoptSession(data.accessToken, data.refreshToken)
   })
 
 export const signOutSponsor = createServerFn({ method: 'POST' }).handler(async () => {
   setResponseHeader('Cache-Control', 'no-store')
-  const supabase = createRequestSupabase()
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    throw new Error(error.message || 'Sign out failed.')
-  }
+  await signOut()
 })
 
 function isTokenPair(

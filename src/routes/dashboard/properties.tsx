@@ -20,7 +20,7 @@ export type PropertyListItem = Pick<
 const loadSponsorProperties = createServerFn({ method: 'GET' }).handler(
   async (): Promise<{ properties: PropertyListItem[]; error: string | null }> => {
     setResponseHeader('Cache-Control', 'no-store')
-    const supabase = createRequestSupabase()
+    const supabase = await createRequestSupabase()
 
     const {
       data: { user },

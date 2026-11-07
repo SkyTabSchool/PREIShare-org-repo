@@ -1,5 +1,5 @@
 // Sponsor sign-in. The form uses the public anon client only.
-// The session is then stored in httpOnly cookies by the anon server client.
+// Tokens are then stored in httpOnly cookies via storeSponsorSession.
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, type SubmitEvent } from 'react'
 import { supabaseBrowser } from '../lib/supabase.client'
@@ -49,8 +49,8 @@ function LoginPage() {
         return
       }
 
-      // The dashboard reads the cookie session. Clear the browser copy of the tokens.
-      await supabaseBrowser.auth.signOut({ scope: 'local' })
+      // Do not call supabaseBrowser.auth.signOut here. Even scope: 'local' hits
+      // /logout and revokes the session, so the httpOnly cookies become useless.
       await navigate({ to: '/dashboard' })
     } catch (caught) {
       setErrorMessage(
