@@ -161,8 +161,8 @@ This doc does not define SQL operators yet. For implementers, the ranking contra
 - Final similarity operator / distance metric in SQL (align with [`docs/vector-search-learner-notes.md`](vector-search-learner-notes.md); cosine is the working reminder until chosen)
 - Default top-K for the first API (notes suggest trying K = 5)
 - Whether `city` / `price` appear on the demo seed set for display realism (neither is required for embedding or ranking)
-- How this tutorial entity maps onto existing `property_listings` (if at all) without pulling auth/RLS into the semantic-search slice
+- ~~How this tutorial entity maps onto existing `property_listings`~~ — resolved in [`docs/pgvector-setup-plan.md`](pgvector-setup-plan.md): alter `property_listings` (add `embedding vector(1536)`); do not create a parallel `properties` table; leave owner RLS as-is for this slice
 
 ## Handoff
 
-Next: plan Supabase pgvector enablement and migration order using this doc as the schema contract (`docs/pgvector-setup-plan.md`).
+Next: implement the Supabase migration ordered in [`docs/pgvector-setup-plan.md`](pgvector-setup-plan.md) (enable `vector`, then add nullable `embedding vector(1536)` on `property_listings`).
