@@ -7,7 +7,7 @@ import { useState, type SubmitEvent } from 'react'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseHeader } from '@tanstack/react-start/server'
 import type { Database } from '../../lib/supabase/types'
-import { createRequestSupabase } from '../../server/sponsor-session'
+import { createRequestSupabase } from '../../server/sponsor-session.server'
 
 type CreatePropertyInput = {
   title: string

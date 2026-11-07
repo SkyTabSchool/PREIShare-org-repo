@@ -1,7 +1,10 @@
 // Server function the browser calls after a successful anon-key sign-in.
 // The handler stores tokens in httpOnly cookies. It does not accept an owner id.
 import { createServerFn } from '@tanstack/react-start'
-import { adoptSession, type AdoptSessionResult } from '../lib/auth/session'
+import {
+  adoptSession,
+  type AdoptSessionResult,
+} from '../lib/auth/session.server'
 
 export const establishSession = createServerFn({ method: 'POST' })
   .validator((input: unknown): { accessToken: string; refreshToken: string } => {

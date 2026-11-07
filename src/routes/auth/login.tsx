@@ -2,7 +2,7 @@
 // On success → /dashboard. On failure → show the error text.
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState, type SubmitEvent } from 'react'
-import { supabaseBrowser } from '../../lib/supabase.client'
+import { supabaseBrowser } from '../../lib/supabase.browser'
 import { establishSession } from '../../server/auth'
 
 type LoginSearch = {

@@ -30,7 +30,7 @@ Do not change auth, RLS, or Supabase clients without reading those four document
 
 - **Auth**: Supabase Auth sessions drive access to dashboard routes. Session proof is stored/read via httpOnly cookies on the server (`storeSponsorSession` / `readSponsorSession`). Unauthenticated users are sent to `/login`. Do not rely on hiding UI alone.
 - **Data**: Tables are `profiles` (optional sponsor display linkage) and `property_listings` (listings owned by `auth.users.id` via `owner_id`). RLS is enabled; policies match the matrix in `docs/data-model-and-rls-matrix.md`. There is no separate `sponsors` / `properties` table pair for this topic—listings stay on `property_listings`.
-- **Clients**: Browser-safe client (`src/lib/supabase.client.ts`) vs server modules (`src/lib/supabase.server.ts`, `src/server/sponsor-session.ts`) keeps secret keys out of client code. Sponsor property list/create use `createRequestSupabase()` (anon key + session cookies) so RLS still applies. Do not use the service-role key in the browser to “make listings work.”
+- **Clients**: Browser-safe client (`src/lib/supabase.browser.ts`) vs server modules (`src/lib/supabase.server.ts`, `src/server/sponsor-session.ts`) keeps secret keys out of client code. Sponsor property list/create use `createRequestSupabase()` (anon key + session cookies) so RLS still applies. Do not use the service-role key in the browser to “make listings work.”
 - **Env hygiene**: Variable names and public/secret rules are documented in `.env.example` and `docs/env-var-checklist.md`. Real values live in a gitignored `.env`. Secrets are not committed and must never use a `VITE_` prefix.
 
 ---
@@ -50,10 +50,11 @@ Do not change auth, RLS, or Supabase clients without reading those four document
 
 | Path | Role |
 | --- | --- |
-| `src/lib/supabase.client.ts` | Browser-safe Supabase client (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` only) |
+| `src/lib/supabase.browser.ts` | Browser-safe Supabase client (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` only; not named `*.client.ts` so SSR routes can import it) |
 | `src/lib/supabase.server.ts` | Server clients: session-aware anon client helpers + `createSupabaseServiceRoleClient()` |
-| `src/server/sponsor-session.ts` | Cookie session store/read + `createRequestSupabase()` for RLS-bound property routes |
-| `src/lib/auth/session.ts` | Session adopt / validate / sign-out (uses service-role for JWT verify and admin sign-out) |
+| `src/server/sponsor-session.ts` | `createServerFn` wrappers for read/store/sign-out (safe to import from routes) |
+| `src/server/sponsor-session.server.ts` | `createRequestSupabase()` for RLS-bound property routes (server-only) |
+| `src/lib/auth/session.server.ts` | Session adopt / validate / sign-out (uses service-role for JWT verify and admin sign-out) |
 
 ### Routes
 
@@ -87,7 +88,7 @@ Do not claim “done” for items that remain open or only partially mitigated. 
 ### Residual risks from verification (still open / incomplete)
 
 - **`/dashboard/listings` still bypasses RLS**: `src/server/listings.ts` uses `createSupabaseServiceRoleClient()` and filters ownership in application code. `/dashboard/properties` does **not** use that path; treat the older listings route as a leftover, not the model to copy.
-- **Service-role still used for session plumbing**: `src/lib/auth/session.ts` uses the service-role client to verify JWTs, write/clear httpOnly cookies, and admin-sign-out. Properties data access still goes through the anon session client in `createRequestSupabase()`.
+- **Service-role still used for session plumbing**: `src/lib/auth/session.server.ts` uses the service-role client to verify JWTs, write/clear httpOnly cookies, and admin-sign-out. Properties data access still goes through the anon session client in `createRequestSupabase()`.
 - **Insert error UI can surface Postgres wording**: A failed DB insert may display `error.message` as-is. Validation failure was exercised; an RLS insert denial was not forced in the UI during verification.
 - **Production bundle / CI not inspected**: File review showed the browser client does not read the service-role key; a production bundle or deploy pipeline was not checked on that run.
 - **Commit state at verification**: Auth/session fixes on login and property routes were noted as uncommitted relative to `main` at `3ef6816`. Confirm the demo/PR branch includes those changes before stakeholder review.

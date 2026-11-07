@@ -1,7 +1,7 @@
 // Layout for /dashboard. Anonymous visitors are redirected before the page renders.
 import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
-import { supabaseBrowser } from '../lib/supabase.client'
+import { supabaseBrowser } from '../lib/supabase.browser'
 import { readSponsorSession, signOutSponsor } from '../server/sponsor-session'
 
 export const Route = createFileRoute('/dashboard')({

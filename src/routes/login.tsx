@@ -2,7 +2,7 @@
 // Tokens are then stored in httpOnly cookies via storeSponsorSession.
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, type SubmitEvent } from 'react'
-import { supabaseBrowser } from '../lib/supabase.client'
+import { supabaseBrowser } from '../lib/supabase.browser'
 import { storeSponsorSession } from '../server/sponsor-session'
 
 export const Route = createFileRoute('/login')({

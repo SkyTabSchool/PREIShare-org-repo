@@ -3,7 +3,7 @@
 // If email confirmation is required (no session yet) → /auth/login.
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState, type SubmitEvent } from 'react'
-import { supabaseBrowser } from '../../lib/supabase.client'
+import { supabaseBrowser } from '../../lib/supabase.browser'
 import { establishSession } from '../../server/auth'
 
 export const Route = createFileRoute('/auth/signup')({

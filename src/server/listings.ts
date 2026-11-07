@@ -8,7 +8,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseHeader } from '@tanstack/react-start/server'
 import { z } from 'zod'
-import { getUser } from '../lib/auth/session'
+import { getUser } from '../lib/auth/session.server'
 import {
   createListingSchema,
   updateListingSchema,

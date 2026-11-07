@@ -1,68 +1,19 @@
-// Server functions for sponsor sign-in.
-// Session tokens live in httpOnly cookies (see lib/auth/session.ts). The anon
-// request client is then seeded from those cookies so RLS still sees auth.uid().
+// createServerFn wrappers — safe to import from routes/components.
+// Server-only cookie/client helpers live in sponsor-session.server.ts so
+// @tanstack/react-start/server is not kept alive outside RPC handlers.
 import { createServerFn } from '@tanstack/react-start'
-import { getCookie, setResponseHeader } from '@tanstack/react-start/server'
-import { createClient } from '@supabase/supabase-js'
+import { setResponseHeader } from '@tanstack/react-start/server'
 import {
   adoptSession,
   getUser,
   signOut,
   type AdoptSessionResult,
-} from '../lib/auth/session'
-import type { Database } from '../lib/supabase/types'
+} from '../lib/auth/session.server'
 
 export type SponsorSession = {
   user: {
     email: string | null
   }
-}
-
-const ACCESS_COOKIE = 'preishare_access_token'
-const REFRESH_COOKIE = 'preishare_refresh_token'
-
-function requireEnv(name: string, value: string | undefined): string {
-  if (!value) {
-    throw new Error(`Missing server env ${name}. See docs/env-var-checklist.md.`)
-  }
-  return value
-}
-
-/**
- * Anon-key client for this request, authenticated as the cookie session user.
- * Prefer this over the service-role client for sponsor reads/writes so RLS applies.
- */
-export async function createRequestSupabase() {
-  // Refresh/validate first so the access cookie is usable for this request.
-  await getUser()
-
-  const url = requireEnv(
-    'SUPABASE_URL',
-    process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL,
-  )
-  const anonKey = requireEnv(
-    'SUPABASE_ANON_KEY',
-    process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY,
-  )
-  const accessToken = getCookie(ACCESS_COOKIE)
-  const refreshToken = getCookie(REFRESH_COOKIE)
-
-  const supabase = createClient<Database>(url, anonKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  })
-
-  if (accessToken && refreshToken) {
-    await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    })
-  }
-
-  return supabase
 }
 
 export const readSponsorSession = createServerFn({ method: 'GET' }).handler(
