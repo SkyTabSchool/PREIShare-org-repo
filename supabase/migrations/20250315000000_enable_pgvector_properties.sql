@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.properties (
   description text NOT NULL,
   -- Optional display/seed context only (not a search filter in this tutorial).
   city text,
+  state text,
   -- Optional display/seed context only; never treated as the embedding itself.
   price numeric,
   -- Vector column: one embedding per property (from title + description).

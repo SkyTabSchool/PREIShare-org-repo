@@ -1,0 +1,69 @@
+{
+  "_comment": "Sample PREIshare listings for semantic-search demos. Fields match supabase/migrations/20250315000000_enable_pgvector_properties.sql (id, title, description, city, state, price). id is a UUID. state is a capital USPS code (e.g. UT, MN). Embedding is filled later by seed/backfill. Descriptions are full sentences so embeddings capture lifestyle and investment meaning.",
+  "properties": [
+    {
+      "id": "2015e7f2-eda2-4a37-8763-98f9a3d9bb60",
+      "title": "Secluded pine cabin on a quiet bay",
+      "description": "This cedar-and-pine cabin sits among tall trees on a sheltered bay with almost no road noise after dusk. Guests can walk to a private dock, paddle at sunrise, and return to a wood stove and screened porch. Summer weekends already book well as a short-term getaway, so the listing offers both a personal retreat and clear vacation-rental upside without feeling commercial.",
+      "city": "Grand Marais",
+      "state": "MN",
+      "price": 349000
+    },
+    {
+      "id": "46546d7f-83f0-4f51-a8ca-a4a987f59b8f",
+      "title": "Sunlit warehouse loft steps from downtown transit",
+      "description": "An open-plan loft in a converted brick warehouse with tall windows, polished concrete floors, and a mezzanine sleeping loft. Offices, light rail, and coffee shops are a short walk away, which appeals to young professionals who want city convenience. The building is lively on weeknights, so this is an urban lifestyle buy rather than a quiet escape.",
+      "city": "Minneapolis",
+      "state": "MN",
+      "price": 425000
+    },
+    {
+      "id": "4f3cf472-ffe9-49af-a2cb-c3f09186be36",
+      "title": "Spacious four-bedroom home near top-rated schools",
+      "description": "This suburban family house sits on a quiet cul-de-sac with a fenced backyard, two-car garage, and room for a home office. Neighborhood parks and highly regarded elementary and middle schools sit within a short drive, which supports steady long-term tenant demand from families. It is built for year-round living, not seasonal vacation rentals.",
+      "city": "Eden Prairie",
+      "state": "MN",
+      "price": 589000
+    },
+    {
+      "id": "bff9d489-c611-40e4-a4a9-e09422d2c022",
+      "title": "Turnkey duplex with strong cash-flow history",
+      "description": "A well-maintained side-by-side duplex with separate entrances, updated kitchens, and recent HVAC work in both units. Both sides are currently leased to long-term tenants at market rents, and the owner provides several years of rent rolls and expense records for underwriting. The investment thesis is reliable monthly income and low vacancy, not lifestyle amenities or waterfront views.",
+      "city": "Saint Paul",
+      "state": "MN",
+      "price": 465000
+    },
+    {
+      "id": "05157508-087b-4299-a5e2-347eb338d552",
+      "title": "Corner condo above bars and late-night venues",
+      "description": "This high-floor downtown condo overlooks a street packed with restaurants, sports bars, and live music that runs late most nights. Street noise and weekend crowds are part of the experience, and the building markets itself to buyers who want nightlife at the door. It is a clear mismatch for anyone seeking a quiet cabin near water or a peaceful rural weekend.",
+      "city": "Minneapolis",
+      "state": "MN",
+      "price": 398000
+    },
+    {
+      "id": "c6987885-56eb-4af3-9847-71e1b5d69b97",
+      "title": "Walkable downtown condo near restaurants and shops",
+      "description": "A bright one-bedroom condo on a calm residential block just off the main dining corridor, with grocery stores, cafes, and evening restaurants within a few blocks. Residents can leave the car parked and walk to dinner most nights. The tone is convenient urban living with dining and errands nearby, without the late-night club scene of the busiest entertainment streets.",
+      "city": "Minneapolis",
+      "state": "MN",
+      "price": 372000
+    },
+    {
+      "id": "63221242-050c-4f1e-bc95-a88a5b8c81db",
+      "title": "Rustic river cottage with kayak access and booking demand",
+      "description": "A small rustic cottage faces a slow bend of the river, with a soft lawn leading down to a kayak launch and fishing spot. Birds, water sounds, and tree cover define the setting more than traffic. Prior owners ran it as a seasonal short-term rental with strong summer occupancy, so buyers get a peaceful waterfront feel plus documented rental interest.",
+      "city": "Stillwater",
+      "state": "MN",
+      "price": 315000
+    },
+    {
+      "id": "2bc81418-9947-4bd6-a7c0-f1cdf6903bd0",
+      "title": "Irrigated cropland parcel with productive soils",
+      "description": "This agricultural listing is productive irrigated farmland with tile drainage, center-pivot coverage, and a multi-year crop history suited to grain operators. There is no dwelling, cabin, or recreational shoreline—only fields, an equipment approach, and utility access for farming. It should rank low for lifestyle queries about quiet cabins, family homes, or downtown condos, and serves as a near-miss control for semantic search demos.",
+      "city": "Redwood Falls",
+      "state": "MN",
+      "price": 880000
+    }
+  ]
+}
