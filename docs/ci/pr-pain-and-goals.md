@@ -5,9 +5,11 @@
 **Stack:** TypeScript, TanStack Start, React, Supabase  
 **How to use this file:** name this brief in every CI prompt so the agent stays inside Sprint 6 scope.
 
-## Client need (in my own words)
+## Client need
 
-PREIshare’s dashboard team needs every pull request to get the same automatic build-and-check run so broken TypeScript/React changes are caught before merge. Humans still decide whether the change is good enough to merge; automation only proves the project still installs, typechecks, builds, lints, and tests.
+PREIshare is shipping an investor dashboard on TypeScript, TanStack Start, React, and Supabase. Proposed changes arrive as GitHub pull requests, but nothing on GitHub proves those changes still install, typecheck, build, lint, and test. Each teammate has to remember those steps on a personal machine. When someone skips them, a broken change can land on the main branch.
+
+The team needs one shared check that runs the same way every time a pull request opens or updates, so reviewers can spend their time on design, risk, and data handling. AI review prompts can speed that reading up. A person still approves the pull request and owns the merge.
 
 ## Current PR pain points
 
