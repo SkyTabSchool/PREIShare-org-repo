@@ -1,0 +1,25 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: Install Dependancies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Inventory observation only. No engines, .nvmrc, or .node-version pin in the repo.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # Clean install from package-lock.json. Package manager is npm.
+      - name: Install dependencies
+        run: npm ci
