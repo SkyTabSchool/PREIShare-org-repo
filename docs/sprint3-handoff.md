@@ -56,7 +56,7 @@ Explicit non-goals kept out of this sprint: sign-in, live Supabase or PostgreSQL
 - Responsive rules and a basic accessibility baseline in `src/styles/dashboard.css` (focusable controls, accessible names, drawer removed from tab order when closed).
 - Verification walkthrough: [`docs/verification-checklist.md`](verification-checklist.md). Overall result: ready for stakeholder handoff. No blocker defects.
 
-`npm run typecheck` is available (`tsc --noEmit`). There is no test or lint script in `package.json` yet.
+`npm run typecheck` is available (`tsc --noEmit`). Pull-request CI also runs `npm run build`, `npm run lint`, and `npm run test`, in that order after install.
 
 ## Route list
 
@@ -178,7 +178,6 @@ npm run preview
 - Header has no compact member identity. Name and contact are only on `/dashboard/profile`.
 - Closed mobile nav still reserves about 33px of sidebar padding.
 - No Supabase client, PostgreSQL, or pgvector queries in `src` for this sprint.
-- No GitHub Actions workflow. `package.json` has `typecheck` and `build`, and does not define `test` or `lint`.
 - Not production-hardened: no app-wide error boundary, and empty states exist only where a widget already accepts an empty list (`PortfolioTable`, `DealsList`).
 - `DealsList` and `ProfileCard` do not save, subscribe, or edit. Profile notes and deal minimums cannot be changed by the user.
 
@@ -187,7 +186,7 @@ npm run preview
 1. Supabase auth and protected `/dashboard/*` routes, including a real member identity in the header.
 2. Replace mock widgets with live portfolio and deals queries at the route or component boundary (loaders or server functions). Keep mock constants out of production paths. Align the home “Open deals” count with the deals list when data is live.
 3. pgvector-powered search for deals or documents once rows live in Postgres.
-4. GitHub Actions CI on pull requests: install, `npm run typecheck`, and `npm run build`. Add test and lint scripts before gating on them.
+4. GitHub Actions CI on pull requests, in this order: checkout, setup Node, install, `npm run typecheck`, `npm run build`, `npm run lint`, and `npm run test`.
 5. Empty, loading, and error states for each data widget, plus a fix for the closed-drawer 33px gap if mobile chrome is still in scope.
 
 Foundations to keep: file-based routes under `src/routes/dashboard/`, one layout at `src/routes/dashboard/route.tsx`, and `dashboardNavItems` as the only nav list. Next sprint should add data at those boundaries rather than a second layout file.

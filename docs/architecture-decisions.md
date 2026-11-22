@@ -45,7 +45,7 @@ Do not reverse the four decisions above casually. The next sprint should build o
 | Supabase auth | Protect `/dashboard/*` at the parent layout route. Personalize the header and `ProfileCard` from the signed-in member instead of the Alex Morgan placeholder. |
 | Live portfolio data | Replace mock stats, `PortfolioSummary`, and `PortfolioTable` through route loaders or server functions. Keep the mock constants out of the production path, and make the home “Open deals” count come from the same source as `DealsList`. |
 | pgvector-powered search | Add search for deals or documents only after those rows live in Postgres. The deals route and `DealsList` are the UI boundary; do not invent a second catalog. |
-| GitHub Actions CI | Gate pull requests with install, `npm run typecheck`, and `npm run build` on this package. Add `test` and `lint` scripts before requiring them. No workflow exists in the repo today. |
+| GitHub Actions CI | Gate pull requests in this order: checkout, setup Node, install, `npm run typecheck`, `npm run build`, `npm run lint`, `npm run test`. The workflow is `.github/workflows/pr-ci.yml`. |
 
 ## Explicit non-goals for Sprint 3
 

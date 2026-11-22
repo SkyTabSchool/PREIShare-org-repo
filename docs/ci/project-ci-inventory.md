@@ -10,8 +10,8 @@ design must use only real package-manager and script names found here.
 - Lockfile present: **`package-lock.json`** (`lockfileVersion` 3, package name `preishare-investor-dashboard`). No `pnpm-lock.yaml`. No `yarn.lock`.
 - Node/TypeScript app signals: `package.json` (`"type": "module"`), `tsconfig.json`, `tsconfig.typecheck.json`, `app.config.ts`, `src/`. No `engines` field and no `.nvmrc` or `.node-version`.
 - Framework signals: React 19 and TanStack Start. `package.json` depends on `react`, `react-dom`, `@tanstack/react-start`, `@tanstack/react-router`, and `vite`. `app.config.ts` wires `tanstackStart({ srcDirectory: 'src' })`, the React plugin, Tailwind, and Nitro. Routes live under `src/routes/` (file-based). `README.md` describes the investor dashboard shell.
-- Test runner (if any): **none found**. No `test` script. No `vitest`, `jest`, or Playwright config. No `*.test.ts` / `*.spec.ts` files.
-- Lint tool (if any): **none found**. No `lint` script. No ESLint (or other linter) config or dependency. `src/routeTree.gen.ts` has an `eslint-disable` comment only.
+- Test runner: **Vitest**. `npm run test` runs `vitest run` from `vitest.config.ts` in the Node environment. It is not a browser end-to-end suite. A unit test lives at `src/components/layout/navConfig.test.ts`.
+- Lint tool: **ESLint**. `npm run lint` runs `eslint .` from `eslint.config.js`. `src/routeTree.gen.ts` is ignored by that config.
 
 ## Scripts discovered in package.json
 | Script name | Exact command (from package.json) | Role |
@@ -21,33 +21,35 @@ design must use only real package-manager and script names found here.
 | `build` | `vite build --config app.config.ts` | build |
 | `preview` | `vite preview --config app.config.ts` | local preview server (not a CI check) |
 | `typecheck` | `tsc --noEmit -p tsconfig.typecheck.json` | typecheck |
+| `lint` | `eslint .` | lint |
+| `test` | `vitest run` | test |
 
 There is no `install` script. Lockfile install is the npm command `npm ci` (local cold start in `README.md` is `npm install`).
 
 Missing common checks (write MISSING if not present):
 - typecheck: present — `npm run typecheck`
 - build: present — `npm run build`
-- lint: **MISSING**
-- test: **MISSING**
+- lint: present — `npm run lint`
+- test: present — `npm run test`
 
 `npm run typecheck` completed with exit 0 on a clean use of the existing install. `npm run build` also completed with exit 0 while `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `EMBEDDING_API_KEY` were blank. The production build does not call Supabase. Loading the browser client at runtime still throws if `VITE_SUPABASE_URL` or `VITE_SUPABASE_ANON_KEY` is missing (`src/lib/supabase.browser.ts`).
 
 ## Bucket A — Headless-safe on GitHub-hosted runners
 Checks that need only a clean checkout, the lockfile install, and public tooling.
-For each item: script name, why it belongs in PR CI, rough order (install → typecheck → lint → test → build or as fits this repo).
+For each item: script name, why it belongs in PR CI, and where it sits after checkout and Node setup. The required order is checkout → setup Node → install → typecheck → build → lint → test.
 
-Lint and test are omitted because those scripts do not exist. A workflow must not call `npm run lint` or `npm run test`.
-
-1. **Install — `npm ci`.** Uses `package-lock.json` on a clean runner. Answers the pain that teammates otherwise have to remember a local install. Runs first. (`npm install` is the README local command; `npm ci` is the lockfile install for CI.)
-2. **Typecheck — `npm run typecheck`** (`tsc --noEmit -p tsconfig.typecheck.json`). Fails the pull request when TypeScript rejects the change. Needs the install. Does not need Supabase env. Runs second.
-3. **Build — `npm run build`** (`vite build --config app.config.ts`). Proves the TanStack Start / React dashboard still builds. Needs the install. Does not need secrets to finish the compile (verified with those env names blank). Runs third.
+1. **Install — `npm ci`.** Uses `package-lock.json` on a clean runner. Answers the pain that teammates otherwise have to remember a local install. Runs after checkout and Node setup. (`npm install` is the README local command; `npm ci` is the lockfile install for CI.)
+2. **Typecheck — `npm run typecheck`** (`tsc --noEmit -p tsconfig.typecheck.json`). Fails the pull request when TypeScript rejects the change. Needs the install. Does not need Supabase env. Runs after install.
+3. **Build — `npm run build`** (`vite build --config app.config.ts`). Proves the TanStack Start / React dashboard still builds. Needs the install. Does not need secrets to finish the compile (verified with those env names blank). Runs after typecheck.
+4. **Lint — `npm run lint`** (`eslint .`). Runs ESLint from `eslint.config.js`. Needs the install. Runs after build.
+5. **Test — `npm run test`** (`vitest run`). Runs Vitest in Node from `vitest.config.ts`. Needs the install. Runs after lint. This is not a browser end-to-end suite.
 
 Leave these scripts off the required PR job:
 
 - `dev` and `preview` start long-running servers.
 - `generate-routes` (`tsr generate`) rewrites `src/routeTree.gen.ts`. It does not need secrets, and it is not a pass/fail gate. Do not run it as a required check unless the team later adds an explicit drift check.
 
-Order for the first workflow: **`npm ci` → `npm run typecheck` → `npm run build`**. Stop on the first failure.
+Order for the workflow: **checkout → setup Node → `npm ci` → `npm run typecheck` → `npm run build` → `npm run lint` → `npm run test`**. Stop on the first failure.
 
 ## Bucket B — Needs secrets, env, or external services
 Do **not** put these in the first PR CI job unless the team later adds protected secrets and a safe plan.
@@ -67,12 +69,12 @@ No private package registry is referenced. npm dependencies install from the pub
 Items CI must not pretend to decide: product intent, UX quality, security-sensitive design,
 "should we merge", AI review suggestions that still need a person.
 
-- Approve the pull request, request changes, or merge. A green `typecheck` and `build` is evidence that those commands passed. It is not permission to merge.
+- Approve the pull request, request changes, or merge. A green check is evidence that install, typecheck, build, lint, and test passed in that order. It is not permission to merge.
 - Product and UX of the investor dashboard (Home, Portfolio, Deals, Profile, listings, search): copy, layout, empty states, and whether the flow matches the sprint brief.
 - Security-sensitive design: where the service-role key is used, whether sponsor reads and writes go through the user session so RLS applies, and whether secrets stay out of `VITE_` names and the client bundle.
 - Data handling: seed data, embeddings, and migrations change investor or listing data. A person decides whether that change is appropriate.
 - AI review comments. They can speed reading. A person remains accountable for the decision.
-- Adding lint or tests later. Choosing the tool and what “good” means is a team decision. This inventory does not invent `eslint` or `vitest` scripts.
+- Adding a browser end-to-end suite. The PR job already runs ESLint and Node Vitest. Choosing another test tool is a team decision.
 
 ## Supabase / env caveats for CI
 - Env var **names** referenced by the app or `.env.example` (values never committed):
@@ -83,25 +85,25 @@ Items CI must not pretend to decide: product intent, UX quality, security-sensit
   - `npm run dev` and `npm run preview`.
   - `npx tsx --env-file=.env scripts/seed-property-embeddings.ts`.
   - Applying files under `supabase/migrations/` by hand or against a hosted database. Do not point that at production from PR automation.
-- Recommendation for Sprint 6 PR CI: **keep the first pipeline on Bucket A only** — `npm ci`, then `npm run typecheck`, then `npm run build`. Do not add lint or test until those scripts exist in `package.json`. Do not add Supabase, embeddings, seed, or migrations.
+- Recommendation for Sprint 6 PR CI: **keep the pipeline on Bucket A only**, in this order — checkout, setup Node, `npm ci`, `npm run typecheck`, `npm run build`, `npm run lint`, `npm run test`. Do not add Supabase, embeddings, seed, or migrations.
 
 ## Risks and open questions
 - Multiple lockfiles? No. Only `package-lock.json`. The `pnpm` key in `package.json` is not a second package manager. CI should call `npm ci`, not `pnpm install`.
 - Scripts that call interactive tools? `dev` and `preview` are servers. `generate-routes` rewrites a generated file. Neither belongs in the first required job.
-- Tests that need a browser or network? No test script and no test files, so nothing to run. Live Supabase and the embedding provider need network and secrets; they stay in Bucket B.
+- Tests that need a browser or network? The PR test is `vitest run` in Node. It does not open a browser. Live Supabase and the embedding provider need network and secrets; they stay in Bucket B.
 - No Node version pin (`engines`, `.nvmrc`, or `.node-version`). Runners need a current Node that can install this lockfile. The app was typechecked and built with Node v22 in this inspection. That version is an observation, not a repo pin.
 - Several TanStack packages are ranged as `"latest"` in `package.json`. `npm ci` still installs the versions locked in `package-lock.json`. Do not switch installers.
 - `src/lib/supabase.browser.ts` throws at module load when the two public `VITE_` names are missing. That did not fail `vite build`. A future SSR change could execute that module during build. If a clean runner then fails the build, fix the app so compile does not require secrets, or supply only the public names — never `SUPABASE_SERVICE_ROLE_KEY` — and record that choice before expanding Bucket A.
-- Bucket A cannot catch behavior regressions until a `test` script exists. Reviewers still have to exercise auth, listings, and search when those paths change.
+- `npm run test` runs the Node Vitest file that exists today. Reviewers still have to exercise auth, listings, and search when those paths change.
 
 ## Link back to earlier docs
 - Pain/goals addressed by Bucket A (from [`docs/ci/pr-pain-and-goals.md`](pr-pain-and-goals.md)):
   - Forgotten local installs → `npm ci` on the pull request.
-  - Skipped typecheck and build → required `npm run typecheck` and `npm run build`.
+  - Skipped typecheck, build, lint, and test → required `npm run typecheck`, `npm run build`, `npm run lint`, and `npm run test`, after install.
   - No shared cloud run → one GitHub-hosted recipe on open and on update.
-  - Broken code reaching `main` with no shared bar → fail the PR check when install, typecheck, or build fails.
+  - Broken code reaching `main` with no shared bar → fail the PR check when install, typecheck, build, lint, or test fails.
   - Reviewers re-running “does it build?” → the green check or red X is already on the request.
-  - Lint and test stay out until scripts exist. The goals brief says to run them once scripts are confirmed. They are not confirmed.
+  - Lint and test run after the build. The order is checkout → setup Node → install → typecheck → build → lint → test.
   - Secrets and production access stay outside this sprint’s PR automation (Bucket B).
 - CI idea used: automated checks on every PR before merge (from [`docs/ci/ci-concepts-notes.md`](ci-concepts-notes.md)). The machine runs the Bucket A recipe. A person still approves and merges. A green check means those commands passed on that commit. It does not mean “merge it.”
 

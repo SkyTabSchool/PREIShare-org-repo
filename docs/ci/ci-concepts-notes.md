@@ -22,13 +22,13 @@ A pipeline (GitHub calls the file a **workflow**) is the written list of steps t
 
 Think of it as a checklist a machine can follow without asking anyone what to do next:
 
-1. Start from a fresh environment, with none of a teammate’s leftover files or private setup.
-2. Get the proposed code from the pull request.
-3. Install the project’s dependencies.
-4. Run TypeScript typecheck.
-5. Build the dashboard.
-6. Run lint, once that script exists.
-7. Run tests, once that script exists.
+1. Checkout — get the proposed code from the pull request onto a fresh runner.
+2. Setup — install Node.js 22.
+3. Install — install the project’s dependencies from the lockfile.
+4. Typecheck — run TypeScript typecheck.
+5. Build — build the dashboard.
+6. Lint — run ESLint.
+7. Test — run Vitest in Node.
 8. Report one clear result back on the pull request: passed, or failed at a named step.
 
 “Pipeline” and “workflow” name that same ordered run. The workflow is the recipe stored with the project. The pipeline is that recipe actually running when a pull request opens or updates. Each step depends on the one before it: there is no point building if install failed, and a later green step does not erase an earlier failure.

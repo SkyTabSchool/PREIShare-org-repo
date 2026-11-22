@@ -22,11 +22,13 @@ The team needs one shared check that runs the same way every time a pull request
 
 ## Automated CI goals (machines should do these on every PR)
 
-- Install project dependencies in a clean environment.
+- Checkout the pull request on a clean runner.
+- Set up Node.js.
+- Install project dependencies.
 - Run TypeScript typecheck.
 - Build the TanStack Start / React dashboard.
-- Run lint (once scripts are confirmed).
-- Run tests (once scripts are confirmed).
+- Run lint.
+- Run tests.
 - Fail the PR check clearly when any required step fails.
 
 ## Human review stays in charge
@@ -47,7 +49,7 @@ The team needs one shared check that runs the same way every time a pull request
 ## Success signals
 
 - Opening or updating a PR triggers a single clear CI workflow.
-- Required checks (install → typecheck → build → lint → test) run in a sensible order.
+- Required checks run in this order: checkout → setup → install → typecheck → build → lint → test.
 - Failures are visible on the PR without asking a teammate to “try it locally.”
 - An AI-assisted review prompt pack exists that speeds humans up without skipping human judgment.
 - Stakeholders can read a short handoff that explains what is automated vs human-owned.

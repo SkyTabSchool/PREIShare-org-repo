@@ -28,9 +28,9 @@ These are the scripts defined in `package.json`:
 | Production build | `npm run build` |
 | Preview the build | `npm run preview` |
 | Typecheck | `npm run typecheck` |
+| Lint | `npm run lint` |
+| Test | `npm run test` |
 | Regenerate the route tree | `npm run generate-routes` |
-
-There is no `test` or `lint` script in `package.json`.
 
 ## Docs
 
