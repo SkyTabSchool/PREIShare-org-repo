@@ -2,8 +2,17 @@ name: PR CI
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
     branches:
       - main
+
+# One run per pull request. A newer push cancels the in-progress run for that PR.
+concurrency:
+  group: ${{ github.workflow }}-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   ci:
